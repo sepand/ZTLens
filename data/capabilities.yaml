@@ -1,0 +1,148 @@
+# Source-of-truth data for the capability matrix.
+# The table in /capability-matrix/README.md is generated from this file.
+#
+# Schema:
+#   id: unique slug
+#   pillar: one of the 7 DoD ZT RA 2.0 pillars
+#   capability: short name
+#   traditional / advanced / optimal: description of the control at each maturity stage
+#   frameworks: list of {framework, ref} tie-ins (informal cross-reference, not a compliance claim)
+
+- id: user-mfa
+  pillar: User
+  capability: Multi-Factor Authentication
+  traditional: Password-only or basic MFA (SMS/OTP) at network login
+  advanced: Phishing-resistant MFA (FIDO2/PKI) enforced at app and privileged-session level
+  optimal: Continuous, risk-adaptive authentication using behavioral and contextual signals
+  frameworks:
+    - {framework: NIST 800-53, ref: IA-2}
+    - {framework: PCI-DSS v4.0, ref: "8.4"}
+    - {framework: NYDFS 500, ref: "500.12"}
+
+- id: user-identity-federation
+  pillar: User
+  capability: Identity Federation & Single Sign-On
+  traditional: Local identity stores per application
+  advanced: Centralized IdP with federated SSO across most applications
+  optimal: Unified identity fabric with just-in-time, attribute-based access across all environments
+  frameworks:
+    - {framework: NIST 800-53, ref: IA-8}
+    - {framework: SOX (ITGC), ref: "Access Management"}
+
+- id: device-inventory
+  pillar: Device
+  capability: Device Inventory & Compliance
+  traditional: Manual asset spreadsheets, periodic audits
+  advanced: Automated MDM/EDR-based inventory with compliance scoring
+  optimal: Real-time device trust scoring feeding dynamic access decisions
+  frameworks:
+    - {framework: NIST 800-53, ref: CM-8}
+    - {framework: PCI-DSS v4.0, ref: "12.5"}
+
+- id: device-health-attestation
+  pillar: Device
+  capability: Device Health Attestation
+  traditional: No attestation; trust based on network location
+  advanced: Agent-based posture checks (patch level, disk encryption) gate access
+  optimal: Hardware-rooted attestation (TPM) continuously verified per session
+  frameworks:
+    - {framework: NIST 800-207, ref: "Sec 3.3"}
+
+- id: app-secure-sdlc
+  pillar: Application & Workload
+  capability: Secure Software Development Lifecycle
+  traditional: Manual code review, ad hoc testing
+  advanced: Automated SAST/DAST in CI/CD with gated deploys
+  optimal: Continuous security validation with runtime application self-protection (RASP)
+  frameworks:
+    - {framework: NIST 800-53, ref: SA-11}
+    - {framework: SOX (ITGC), ref: "Change Management"}
+
+- id: app-microsegmentation
+  pillar: Application & Workload
+  capability: Application-Layer Micro-Segmentation
+  traditional: Flat network, coarse VLAN segmentation
+  advanced: Workload-aware segmentation via service mesh or NGFW policies
+  optimal: Fully dynamic, identity-based segmentation per workload/session
+  frameworks:
+    - {framework: NIST 800-207, ref: "Sec 3.4"}
+    - {framework: PCI-DSS v4.0, ref: "1.3"}
+
+- id: data-classification
+  pillar: Data
+  capability: Data Classification & Labeling
+  traditional: Manual, inconsistent classification
+  advanced: Automated classification via DLP/CASB tooling
+  optimal: Continuous, ML-assisted classification enforcing access policy in real time
+  frameworks:
+    - {framework: NIST 800-53, ref: RA-2}
+    - {framework: GLBA (Safeguards Rule), ref: "16 CFR 314.4(c)"}
+    - {framework: NYDFS 500, ref: "500.03"}
+
+- id: data-encryption
+  pillar: Data
+  capability: Encryption at Rest & In Transit
+  traditional: Encryption applied inconsistently, mostly in transit only
+  advanced: Encryption enforced by policy across most data stores and channels
+  optimal: End-to-end encryption with centralized key management and rotation
+  frameworks:
+    - {framework: PCI-DSS v4.0, ref: "3.5 / 4.2"}
+    - {framework: NYDFS 500, ref: "500.15"}
+
+- id: network-macrosegmentation
+  pillar: Network & Environment
+  capability: Network Segmentation
+  traditional: Perimeter firewall, flat internal network
+  advanced: Macro-segmentation by zone/environment with internal firewalls
+  optimal: Software-defined micro-perimeters enforced per session, no implicit trust zones
+  frameworks:
+    - {framework: NIST 800-207, ref: "Sec 3.4"}
+    - {framework: PCI-DSS v4.0, ref: "1.2"}
+
+- id: network-encrypted-traffic
+  pillar: Network & Environment
+  capability: Encrypted Traffic Inspection
+  traditional: Limited visibility into encrypted traffic
+  advanced: TLS inspection at key chokepoints
+  optimal: Full encrypted-traffic analytics without decryption (metadata/ML-based)
+  frameworks:
+    - {framework: NIST 800-53, ref: SC-8}
+
+- id: automation-orchestration
+  pillar: Automation & Orchestration
+  capability: Security Orchestration, Automation & Response (SOAR)
+  traditional: Manual incident response runbooks
+  advanced: Automated playbooks for common alert types
+  optimal: Policy-driven, self-healing response integrated across all pillars
+  frameworks:
+    - {framework: NIST 800-53, ref: IR-4}
+    - {framework: NYDFS 500, ref: "500.16"}
+
+- id: automation-policy-engine
+  pillar: Automation & Orchestration
+  capability: Centralized Policy Decision Point (PDP)
+  traditional: Policy enforced locally per system, no central authority
+  advanced: Centralized PDP/PEP model for major application tiers
+  optimal: Unified PDP evaluating real-time risk signals across all pillars for every access request
+  frameworks:
+    - {framework: NIST 800-207, ref: "Sec 3.2 (PDP/PEP model)"}
+
+- id: visibility-siem
+  pillar: Visibility & Analytics
+  capability: Centralized Logging & SIEM
+  traditional: Siloed logs, manual review
+  advanced: Centralized SIEM with correlation rules across most systems
+  optimal: Behavioral analytics (UEBA) with automated risk scoring feeding policy decisions
+  frameworks:
+    - {framework: NIST 800-53, ref: AU-6}
+    - {framework: NYDFS 500, ref: "500.14"}
+    - {framework: SOX (ITGC), ref: "Monitoring"}
+
+- id: visibility-threat-intel
+  pillar: Visibility & Analytics
+  capability: Threat Intelligence Integration
+  traditional: Ad hoc, manual threat feed consumption
+  advanced: Automated ingestion into SIEM/SOAR for detection
+  optimal: Predictive analytics correlating threat intel with real-time access decisions
+  frameworks:
+    - {framework: NIST 800-53, ref: RA-3}
