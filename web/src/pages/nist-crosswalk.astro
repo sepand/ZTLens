@@ -56,9 +56,21 @@ const functionInfo = [
             {pillars.map((p) => (
               <tr>
                 <td class="pillar-col">{p.data.name}</td>
-                {functions.map((f) => (
-                  <td class="fn-cell">{p.data.cells[f.key]}</td>
-                ))}
+                {functions.map((f) => {
+                  const items = p.data.cells[f.key]
+                    .split(';')
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+                  return (
+                    <td class="fn-cell" style={`--fn-color: var(${f.var})`}>
+                      <div class="cw-chip-list">
+                        {items.map((item) => (
+                          <span class="cw-chip">{item}</span>
+                        ))}
+                      </div>
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

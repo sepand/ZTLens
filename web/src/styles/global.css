@@ -485,7 +485,24 @@ section { padding: 72px 0; }
   letter-spacing: 0.04em;
 }
 .crosswalk th.fn-col { border-top: 3px solid var(--fn-color, var(--accent)); }
-.crosswalk td.fn-cell { color: var(--text-muted); border-left: 1px solid var(--border); }
+.crosswalk td.fn-cell { border-left: 1px solid var(--border); padding: 12px; }
+
+.cw-chip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 190px;
+}
+.cw-chip {
+  background: color-mix(in srgb, var(--fn-color, var(--accent)) 10%, var(--bg-elevated));
+  border: 1px solid color-mix(in srgb, var(--fn-color, var(--accent)) 32%, var(--border));
+  border-left: 3px solid var(--fn-color, var(--accent));
+  color: var(--text);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  padding: 6px 10px;
+  border-radius: 7px;
+}
 .crosswalk th.pillar-col, .crosswalk td.pillar-col {
   position: sticky;
   left: 0;
