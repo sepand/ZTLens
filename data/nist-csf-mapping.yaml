@@ -1,0 +1,87 @@
+# Source-of-truth data for the Zero Trust Pillars x NIST CSF 2.0 crosswalk.
+# The table in /mappings/nist-csf-crosswalk.md and the web/nist-crosswalk
+# page are both generated from this file.
+#
+# Pillars here follow a 7-pillar model commonly used in commercial ZT
+# reference architectures (Identity, Network, Applications, Data,
+# Infrastructure, Visibility & Analytics, Automation & Orchestration) —
+# a close cousin of, but not identical to, the DoD ZT RA 2.0 pillar set
+# used in /capability-matrix. NIST CSF 2.0 functions are the six columns:
+# Govern, Identify, Protect, Detect, Respond, Recover.
+
+- id: identity
+  name: Identity
+  order: 1
+  cells:
+    govern: Identity governance policy; RBAC/ABAC standards; access review cadence
+    identify: Identity inventory; entitlement and privileged-account discovery; identity risk scoring
+    protect: MFA; conditional access; least-privilege/just-in-time access; SSO and federation
+    detect: Anomalous sign-in detection; UEBA; impossible-travel and risk-based alerts
+    respond: Automated session revocation; forced password reset; account lockout/quarantine
+    recover: Identity re-provisioning; credential rotation and re-validation post-incident
+
+- id: network
+  name: Network
+  order: 2
+  cells:
+    govern: Network segmentation policy; ZTNA and remote-access standards
+    identify: Network asset and topology discovery; traffic baselining
+    protect: Micro-segmentation; encrypted transport (TLS/IPsec); ZTNA; NGFW policy enforcement
+    detect: Network traffic analytics; IDS/IPS; encrypted-traffic analysis
+    respond: Automated isolation/quarantine of compromised network segments
+    recover: Network configuration restoration; segment and route re-provisioning
+
+- id: applications
+  name: Applications
+  order: 3
+  cells:
+    govern: Secure SDLC policy; application risk classification standards
+    identify: Application inventory; dependency/SBOM tracking; attack-surface mapping
+    protect: SAST/DAST gating in CI/CD; WAF; API security; workload identity (mTLS)
+    detect: Runtime application monitoring; anomalous API call detection; RASP telemetry
+    respond: Automated rollback; workload isolation or kill-switch
+    recover: Redeploy from known-good artifact; patch, re-test, and re-release
+
+- id: data
+  name: Data
+  order: 4
+  cells:
+    govern: Data classification policy; data governance and retention standards
+    identify: Data discovery and classification; sensitive-data inventory and lineage
+    protect: Encryption at rest/in transit; DLP; tokenization; rights management
+    detect: DLP alerts; anomalous data access or exfiltration detection
+    respond: Automated access revocation; DLP block/quarantine of affected data flows
+    recover: Backup restoration; key re-issuance; data integrity verification
+
+- id: infrastructure
+  name: Infrastructure
+  order: 5
+  cells:
+    govern: Infrastructure hardening baselines; patch and change-management policy
+    identify: Asset/CMDB inventory; vulnerability scanning; configuration drift detection
+    protect: Hardened/immutable images; endpoint protection; automated patching
+    detect: Host-based EDR; configuration and compliance drift alerts
+    respond: Automated patching or quarantine of non-compliant hosts
+    recover: Rebuild from golden image; infrastructure-as-code redeploy
+
+- id: visibility-analytics
+  name: Visibility & Analytics
+  order: 6
+  cells:
+    govern: Logging and monitoring policy; telemetry retention standards
+    identify: Log source inventory; visibility coverage-gap analysis
+    protect: Centralized, tamper-evident logging; log integrity protection
+    detect: SIEM correlation; UEBA; threat-intelligence correlation
+    respond: Automated alert triage and enrichment feeding SOAR
+    recover: Post-incident forensic analysis; telemetry-driven lessons learned
+
+- id: automation-orchestration
+  name: Automation & Orchestration
+  order: 7
+  cells:
+    govern: Automation and playbook governance; change control for policy-as-code
+    identify: Manual-process inventory (automation candidates); playbook coverage gaps
+    protect: Policy-as-code enforcement; automated compliance checks in CI/CD
+    detect: Cross-pillar signal correlation feeding SOAR
+    respond: SOAR playbooks (auto-contain, auto-notify); orchestrated cross-pillar response
+    recover: Automated recovery runbooks; self-healing infrastructure workflows

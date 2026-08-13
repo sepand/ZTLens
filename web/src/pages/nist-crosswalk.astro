@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pillars = (await getCollection('nistCrosswalk')).sort((a, b) => a.data.order - b.data.order);
+
+const functions = [
+  { key: 'govern', label: 'Govern', code: 'GV', var: '--fn-govern' },
+  { key: 'identify', label: 'Identify', code: 'ID', var: '--fn-identify' },
+  { key: 'protect', label: 'Protect', code: 'PR', var: '--fn-protect' },
+  { key: 'detect', label: 'Detect', code: 'DE', var: '--fn-detect' },
+  { key: 'respond', label: 'Respond', code: 'RS', var: '--fn-respond' },
+  { key: 'recover', label: 'Recover', code: 'RC', var: '--fn-recover' },
+];
+
+const functionInfo = [
+  { label: 'Govern (GV)', desc: "Establishes and monitors the organization's cybersecurity risk management strategy, expectations, and policy." },
+  { label: 'Identify (ID)', desc: 'Understands current cybersecurity risk to systems, assets, data, and capabilities.' },
+  { label: 'Protect (PR)', desc: 'Implements safeguards to manage risk and limit or contain the impact of events.' },
+  { label: 'Detect (DE)', desc: 'Finds and analyzes possible cybersecurity attacks and compromises.' },
+  { label: 'Respond (RS)', desc: 'Takes action regarding a detected cybersecurity incident.' },
+  { label: 'Recover (RC)', desc: 'Restores assets and operations affected by a cybersecurity incident.' },
+];
+---
+
+<BaseLayout
+  title="ZT Pillars × NIST CSF"
+  description="Zero Trust pillars (Identity, Network, Applications, Data, Infrastructure, Visibility & Analytics, Automation & Orchestration) mapped against the six NIST CSF 2.0 functions."
+>
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Crosswalk</span>
+        <h2>Zero Trust Pillars × NIST CSF 2.0</h2>
+        <p>
+          Maps a 7-pillar Zero Trust model — Identity, Network, Applications,
+          Data, Infrastructure, Visibility &amp; Analytics, and Automation
+          &amp; Orchestration — against the six
+          <a href="https://www.nist.gov/cyberframework" target="_blank" rel="noopener">NIST Cybersecurity Framework 2.0</a>
+          functions: Govern, Identify, Protect, Detect, Respond, Recover.
+          Each cell lists illustrative capabilities, not an exhaustive control set.
+        </p>
+      </div>
+
+      <div class="crosswalk-scroll">
+        <table class="crosswalk">
+          <thead>
+            <tr>
+              <th class="pillar-col">Pillar</th>
+              {functions.map((f) => (
+                <th class="fn-col" style={`--fn-color: var(${f.var})`}>{f.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {pillars.map((p) => (
+              <tr>
+                <td class="pillar-col">{p.data.name}</td>
+                {functions.map((f) => (
+                  <td class="fn-cell">{p.data.cells[f.key]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 56px;">
+        <h2 style="font-size:1.3rem; margin-bottom:20px;">About the NIST CSF 2.0 functions</h2>
+        <div class="grid grid-3">
+          {functionInfo.map((f) => (
+            <div class="card">
+              <h3 style="margin:0 0 8px; font-size:1rem;">{f.label}</h3>
+              <p class="text-muted" style="margin:0; font-size:0.9rem;">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p class="text-muted" style="margin-top:20px; font-size:0.85rem;">
+          Source: <a href="https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf" target="_blank" rel="noopener">NIST Cybersecurity Framework 2.0 (NIST CSWP 29)</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

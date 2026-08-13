@@ -35,4 +35,24 @@ const glossary = defineCollection({
   loader: glob({ pattern: 'README.md', base: '../glossary' }),
 });
 
-export const collections = { pillars, capabilities, mappings, glossary };
+const nistCrosswalkCellSchema = z.object({
+  govern: z.string(),
+  identify: z.string(),
+  protect: z.string(),
+  detect: z.string(),
+  respond: z.string(),
+  recover: z.string(),
+});
+
+const nistCrosswalk = defineCollection({
+  loader: file('../data/nist-csf-mapping.yaml', {
+    parser: (text) => parseYaml(text),
+  }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number(),
+    cells: nistCrosswalkCellSchema,
+  }),
+});
+
+export const collections = { pillars, capabilities, mappings, glossary, nistCrosswalk };
