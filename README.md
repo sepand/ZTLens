@@ -1,4 +1,6 @@
-# Zero Trust Reference Guide
+# ZTLens
+
+Mapping Zero Trust capabilities across DoD, NIST, and compliance frameworks — one lens, many standards.
 
 An independent, community-oriented reference for understanding and implementing Zero Trust (ZT) architecture — built around the **DoD Zero Trust Reference Architecture (RA) 2.0** and **NIST SP 800-207**, cross-walked to widely used regulatory and industry frameworks.
 
