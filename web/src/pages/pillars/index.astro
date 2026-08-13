@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PillarIcon from '../../components/PillarIcon.astro';
+
+const pillars = (await getCollection('pillars')).sort((a, b) => a.data.order - b.data.order);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Pillars" description="The seven DoD Zero Trust pillars: User, Device, Application & Workload, Data, Network & Environment, Automation & Orchestration, Visibility & Analytics.">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">DoD ZT RA 2.0</span>
+        <h2>The seven pillars</h2>
+        <p>Each pillar defines a domain of enforcement. Together they form a single, cross-cutting Zero Trust fabric — see the capability matrix for maturity-staged detail within each.</p>
+      </div>
+      <div class="grid grid-4">
+        {pillars.map((p) => (
+          <a class="card pillar-card" href={`${base}/pillars/${p.id}`}>
+            <div class="pillar-icon"><PillarIcon icon={p.data.icon} /></div>
+            <span class="num">Pillar {p.data.order}</span>
+            <h3>{p.data.title}</h3>
+            <p>View maturity stages &amp; capabilities →</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

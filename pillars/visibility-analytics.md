@@ -1,3 +1,9 @@
+---
+title: "Visibility & Analytics"
+order: 7
+icon: "visibility"
+---
+
 # Pillar 7: Visibility & Analytics
 
 Provide visibility into user, device, application, and network activity so

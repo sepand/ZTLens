@@ -1,3 +1,9 @@
+---
+title: "Data"
+order: 4
+icon: "data"
+---
+
 # Pillar 4: Data
 
 Data is the asset Zero Trust ultimately protects. This pillar focuses on

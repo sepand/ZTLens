@@ -1,3 +1,9 @@
+---
+title: "Application & Workload"
+order: 3
+icon: "app"
+---
+
 # Pillar 3: Application & Workload
 
 Secure everything from applications to hypervisors, containers, and virtual

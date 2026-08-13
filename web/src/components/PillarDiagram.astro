@@ -1,0 +1,48 @@
+---
+const nodes = [
+  { label: 'User', x: 200, y: 50 },
+  { label: 'Device', x: 317, y: 106 },
+  { label: 'App', x: 346, y: 233 },
+  { label: 'Data', x: 265, y: 335 },
+  { label: 'Network', x: 135, y: 335 },
+  { label: 'Automation', x: 54, y: 233 },
+  { label: 'Visibility', x: 83, y: 106 },
+];
+const cx = 200;
+const cy = 200;
+---
+
+<svg class="pillar-diagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of seven Zero Trust pillars connected to a central policy engine">
+  <defs>
+    <radialGradient id="coreGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--accent)" />
+      <stop offset="100%" stop-color="var(--accent-2)" />
+    </radialGradient>
+  </defs>
+
+  {nodes.map((n, i) => (
+    <line
+      class:list={['link', { pulse: i % 2 === 0 }]}
+      x1={cx}
+      y1={cy}
+      x2={n.x}
+      y2={n.y}
+    />
+  ))}
+
+  <g class="node core">
+    <circle cx={cx} cy={cy} r="34" />
+    <text x={cx} y={cy + 4} text-anchor="middle" font-weight="700" fill="#06121a">PDP</text>
+  </g>
+
+  {nodes.map((n) => (
+    <g class="node">
+      <circle cx={n.x} cy={n.y} r="22" />
+      <text
+        x={n.x}
+        y={n.y + (n.y < cy ? -30 : 42)}
+        text-anchor="middle"
+      >{n.label}</text>
+    </g>
+  ))}
+</svg>

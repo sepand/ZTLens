@@ -1,0 +1,64 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PillarIcon from '../../components/PillarIcon.astro';
+
+export async function getStaticPaths() {
+  const pillars = await getCollection('pillars');
+  return pillars.map((p) => ({ params: { slug: p.id }, props: { entry: p } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const capabilities = (await getCollection('capabilities')).filter(
+  (c) => c.data.pillar === entry.data.title
+);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={entry.data.title} description={`Zero Trust pillar: ${entry.data.title}. Maturity stages and mapped capabilities.`}>
+  <section>
+    <div class="wrap">
+      <div class="prose">
+        <div class="pillar-icon"><PillarIcon icon={entry.data.icon} /></div>
+        <Content />
+      </div>
+
+      {capabilities.length > 0 && (
+        <div style="margin-top: 48px;">
+          <h2 style="font-size:1.3rem; margin-bottom:20px;">Capabilities in this pillar</h2>
+          {capabilities.map((c) => (
+            <div class="capability-card">
+              <div class="cap-head">
+                <h3>{c.data.capability}</h3>
+              </div>
+              <div class="cap-stages">
+                <div class="cap-stage-col">
+                  <span class="stage stage-traditional">Traditional</span>
+                  <p>{c.data.traditional}</p>
+                </div>
+                <div class="cap-stage-col">
+                  <span class="stage stage-advanced">Advanced</span>
+                  <p>{c.data.advanced}</p>
+                </div>
+                <div class="cap-stage-col">
+                  <span class="stage stage-optimal">Optimal</span>
+                  <p>{c.data.optimal}</p>
+                </div>
+              </div>
+              {c.data.frameworks.length > 0 && (
+                <div class="cap-frameworks">
+                  {c.data.frameworks.map((f) => (
+                    <span class="fw-chip">{f.framework} ({f.ref})</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p style="margin-top:32px;"><a href={`${base}/pillars`}>← All pillars</a></p>
+    </div>
+  </section>
+</BaseLayout>

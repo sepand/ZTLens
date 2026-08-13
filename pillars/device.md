@@ -1,3 +1,9 @@
+---
+title: "Device"
+order: 2
+icon: "device"
+---
+
 # Pillar 2: Device
 
 Establish and maintain trust in every device (managed, unmanaged, IoT, OT)

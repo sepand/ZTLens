@@ -8,6 +8,18 @@ This repo exists to make Zero Trust concepts approachable: what the pillars mean
 
 > **Disclaimer:** This is an independent educational interpretation of publicly available Zero Trust guidance. It is **not** an official DoD, NIST, CISA, or any other agency/vendor publication, and is not affiliated with or endorsed by any employer of the maintainer. Always consult primary sources (linked below) for authoritative requirements.
 
+## Website
+
+The content in this repo is also published as a browsable site at **[sepand.github.io/ZTLens](https://sepand.github.io/ZTLens/)**, built with [Astro](https://astro.build) from the markdown/YAML in this repo (see [`/web`](web/)). The site is the single source of truth's presentation layer — edit the markdown/YAML here, not the generated site.
+
+To run it locally:
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
 ## Why Zero Trust
 
 Traditional network security assumes that anything inside the perimeter can be trusted. Zero Trust starts from the opposite assumption: **no user, device, or workload is trusted by default — regardless of location** — and every access request must be explicitly verified, authorized, and continuously evaluated.
@@ -28,6 +40,7 @@ Two foundational references anchor this repo:
 | [`/diagrams`](diagrams/) | Architecture and maturity-progression diagrams (Mermaid) |
 | [`/examples`](examples/) | Illustrative implementation patterns (no real organization's detail) |
 | [`/data`](data/) | Source-of-truth data files (YAML/CSV) that the matrix and mapping tables are generated from |
+| [`/web`](web/) | Astro source for the published GitHub Pages site — reads content directly from the folders above |
 
 ## Maturity model
 

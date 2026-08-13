@@ -1,0 +1,17 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const [entry] = await getCollection('glossary');
+const { Content } = await render(entry);
+---
+
+<BaseLayout title="Glossary" description="Zero Trust terms and acronyms.">
+  <section>
+    <div class="wrap">
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

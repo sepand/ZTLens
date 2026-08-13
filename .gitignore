@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
+
+# Astro site (web/)
+web/node_modules/
+web/dist/
+web/.astro/

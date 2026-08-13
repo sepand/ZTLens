@@ -1,3 +1,9 @@
+---
+title: "Automation & Orchestration"
+order: 6
+icon: "automation"
+---
+
 # Pillar 6: Automation & Orchestration
 
 Automate manual security processes to take policy-based, risk-informed

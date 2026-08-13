@@ -1,3 +1,9 @@
+---
+title: "Network & Environment"
+order: 5
+icon: "network"
+---
+
 # Pillar 5: Network & Environment
 
 Segment, isolate, and control the network environment with granular access

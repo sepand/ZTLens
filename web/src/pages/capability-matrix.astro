@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const capabilities = await getCollection('capabilities');
+const pillars = [...new Set(capabilities.map((c) => c.data.pillar))];
+---
+
+<BaseLayout title="Capability Matrix" description="Zero Trust capabilities mapped to pillar, maturity stage, and regulatory framework tie-ins.">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The Core Deliverable</span>
+        <h2>Capability Matrix</h2>
+        <p>Every capability below is staged Traditional → Advanced → Optimal per DoD ZT RA 2.0, with informal tie-ins to common regulatory frameworks. Filter by pillar or search by keyword.</p>
+      </div>
+
+      <div class="matrix-toolbar">
+        <input type="search" id="cap-search" placeholder="Search capabilities, controls, frameworks…" aria-label="Search capabilities" />
+        <select id="cap-pillar" aria-label="Filter by pillar">
+          <option value="">All pillars</option>
+          {pillars.map((p) => <option value={p}>{p}</option>)}
+        </select>
+        <span class="matrix-count" id="cap-count"></span>
+      </div>
+
+      <div id="cap-list">
+        {capabilities.map((c) => {
+          const searchText = [
+            c.data.capability,
+            c.data.pillar,
+            c.data.traditional,
+            c.data.advanced,
+            c.data.optimal,
+            ...c.data.frameworks.map((f) => `${f.framework} ${f.ref}`),
+          ]
+            .join(' ')
+            .toLowerCase();
+          return (
+            <div class="capability-card" data-pillar={c.data.pillar} data-search={searchText}>
+              <div class="cap-head">
+                <div>
+                  <span class="pillar-tag">{c.data.pillar}</span>
+                  <h3>{c.data.capability}</h3>
+                </div>
+              </div>
+              <div class="cap-stages">
+                <div class="cap-stage-col">
+                  <span class="stage stage-traditional">Traditional</span>
+                  <p>{c.data.traditional}</p>
+                </div>
+                <div class="cap-stage-col">
+                  <span class="stage stage-advanced">Advanced</span>
+                  <p>{c.data.advanced}</p>
+                </div>
+                <div class="cap-stage-col">
+                  <span class="stage stage-optimal">Optimal</span>
+                  <p>{c.data.optimal}</p>
+                </div>
+              </div>
+              {c.data.frameworks.length > 0 && (
+                <div class="cap-frameworks">
+                  {c.data.frameworks.map((f) => (
+                    <span class="fw-chip">{f.framework} ({f.ref})</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <p id="cap-empty" class="text-muted" style="display:none;">No capabilities match your filters.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var search = document.getElementById('cap-search');
+    var pillarSelect = document.getElementById('cap-pillar');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.capability-card'));
+    var count = document.getElementById('cap-count');
+    var empty = document.getElementById('cap-empty');
+
+    function applyFilters() {
+      var q = search.value.trim().toLowerCase();
+      var pillar = pillarSelect.value;
+      var visible = 0;
+      cards.forEach(function (card) {
+        var matchesSearch = !q || card.getAttribute('data-search').indexOf(q) !== -1;
+        var matchesPillar = !pillar || card.getAttribute('data-pillar') === pillar;
+        var show = matchesSearch && matchesPillar;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      count.textContent = visible + ' of ' + cards.length + ' capabilities';
+      empty.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    search.addEventListener('input', applyFilters);
+    pillarSelect.addEventListener('change', applyFilters);
+    applyFilters();
+  })();
+</script>

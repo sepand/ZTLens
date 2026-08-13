@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PillarIcon from '../components/PillarIcon.astro';
+import PillarDiagram from '../components/PillarDiagram.astro';
+
+const pillars = (await getCollection('pillars')).sort((a, b) => a.data.order - b.data.order);
+const capabilities = await getCollection('capabilities');
+const frameworkSet = new Set(
+  capabilities.flatMap((c) => c.data.frameworks.map((f) => f.framework))
+);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Home">
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">DoD ZT RA 2.0 · NIST SP 800-207</span>
+        <h1>See Zero Trust <span class="gradient-text">clearly</span>, one lens at a time.</h1>
+        <p class="lead">
+          ZTLens maps Zero Trust capabilities across the seven DoD pillars to
+          real maturity stages and the compliance frameworks teams actually
+          have to satisfy — NIST 800-53, PCI-DSS, GLBA, NYDFS 500, and more.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={`${base}/capability-matrix`}>Explore the Capability Matrix</a>
+          <a class="btn btn-ghost" href={`${base}/pillars`}>Browse the Pillars</a>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>7</b><span>ZT pillars</span></div>
+          <div class="stat"><b>{capabilities.length}+</b><span>mapped capabilities</span></div>
+          <div class="stat"><b>3</b><span>maturity stages</span></div>
+          <div class="stat"><b>{frameworkSet.size}+</b><span>framework tie-ins</span></div>
+        </div>
+      </div>
+      <PillarDiagram />
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The Pillars</span>
+        <h2>Seven pillars, one enforcement fabric</h2>
+        <p>No pillar stands alone — Automation &amp; Orchestration and Visibility &amp; Analytics are cross-cutting, feeding policy decisions across the rest.</p>
+      </div>
+      <div class="grid grid-4">
+        {pillars.map((p) => (
+          <a class="card pillar-card" href={`${base}/pillars/${p.id.replace(/\.md$/, '')}`}>
+            <div class="pillar-icon"><PillarIcon icon={p.data.icon} /></div>
+            <span class="num">Pillar {p.data.order}</span>
+            <h3>{p.data.title}</h3>
+            <p>View maturity stages &amp; capabilities →</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="card" style="background: linear-gradient(120deg, var(--accent-soft), transparent); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0 0 8px; font-size:1.4rem;">Not sure where to start?</h2>
+          <p class="text-muted" style="margin:0;">Filter the capability matrix by pillar and maturity stage to find exactly what applies to your environment.</p>
+        </div>
+        <a class="btn btn-primary" href={`${base}/capability-matrix`}>Open the Matrix</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

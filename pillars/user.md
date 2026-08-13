@@ -1,3 +1,9 @@
+---
+title: "User"
+order: 1
+icon: "user"
+---
+
 # Pillar 1: User
 
 Continuously authenticate, assess, and monitor user activity to govern
