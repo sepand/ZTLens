@@ -6,6 +6,10 @@ const pillars = (await getCollection('nistCrosswalk')).sort((a, b) => a.data.ord
 const capabilities = (await getCollection('capabilities')).map((c) => ({ id: c.id, pillar: c.data.pillar }));
 const base = import.meta.env.BASE_URL;
 
+const vendorEntries = await getCollection('vendors');
+const vendorsByPillar = Object.fromEntries(vendorEntries.map((v) => [v.data.pillar, v.data.vendors]));
+const vendorMeta = vendorEntries[0]?.data ?? { generated_at: new Date().toISOString(), sources: [], disclaimer: '' };
+
 const functions = [
   { key: 'govern', label: 'Govern', code: 'GV', var: '--fn-govern' },
   { key: 'identify', label: 'Identify', code: 'ID', var: '--fn-identify' },
@@ -47,40 +51,69 @@ const functionInfo = [
         </p>
       </div>
 
+      <div class="crosswalk-toolbar">
+        <div class="view-toggle" role="group" aria-label="Table view">
+          <button type="button" class="view-toggle-btn active" data-view-btn="capabilities">Capabilities</button>
+          <button type="button" class="view-toggle-btn" data-view-btn="vendors">Vendors</button>
+        </div>
+        <span class="text-muted" id="vendor-meta-note" style="font-size:0.8rem; display:none;">
+          Vendors last synced {new Date(vendorMeta.generated_at).toLocaleDateString()} from {vendorMeta.sources.length ? vendorMeta.sources.join(', ') : 'no configured source yet'}. {vendorMeta.disclaimer}
+        </span>
+      </div>
+
       <div class="crosswalk-scroll">
-        <table class="crosswalk">
+        <table class="crosswalk" id="crosswalk-table" data-view="capabilities">
           <thead>
             <tr>
               <th class="pillar-col">Pillar</th>
               {functions.map((f) => (
                 <th class="fn-col" style={`--fn-color: var(${f.var})`}>{f.label}</th>
               ))}
+              <th class="vendor-cell vendor-head">Identified vendors</th>
             </tr>
           </thead>
           <tbody>
-            {pillars.map((p) => (
-              <tr>
-                <td class="pillar-col">
-                  {p.data.dod_pillar}
-                  <span class="cw-maturity-dot" id={`cw-dot-${p.id}`} title="Not yet assessed"></span>
-                </td>
-                {functions.map((f) => {
-                  const items = p.data.cells[f.key]
-                    .split(';')
-                    .map((s) => s.trim())
-                    .filter(Boolean);
-                  return (
-                    <td class="fn-cell" style={`--fn-color: var(${f.var})`}>
-                      <div class="cw-chip-list">
-                        {items.map((item) => (
-                          <span class="cw-chip">{item}</span>
-                        ))}
+            {pillars.map((p) => {
+              const pillarVendors = vendorsByPillar[p.data.dod_pillar] || [];
+              return (
+                <tr>
+                  <td class="pillar-col">
+                    {p.data.dod_pillar}
+                    <span class="cw-maturity-dot" id={`cw-dot-${p.id}`} title="Not yet assessed"></span>
+                  </td>
+                  {functions.map((f) => {
+                    const items = p.data.cells[f.key]
+                      .split(';')
+                      .map((s) => s.trim())
+                      .filter(Boolean);
+                    return (
+                      <td class="fn-cell" style={`--fn-color: var(${f.var})`}>
+                        <div class="cw-chip-list">
+                          {items.map((item) => (
+                            <span class="cw-chip">{item}</span>
+                          ))}
+                        </div>
+                      </td>
+                    );
+                  })}
+                  <td class="vendor-cell">
+                    {pillarVendors.length > 0 ? (
+                      <div class="cw-chip-list" style="flex-direction:row; flex-wrap:wrap;">
+                        {pillarVendors.map((v) =>
+                          v.url ? (
+                            <a class="cw-chip vendor-chip" href={v.url} target="_blank" rel="noopener" title={`${v.name} — via ${v.source}`}>{v.publisher}</a>
+                          ) : (
+                            <span class="cw-chip vendor-chip" title={`${v.name} — via ${v.source}`}>{v.publisher}</span>
+                          )
+                        )}
                       </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+                    ) : (
+                      <span class="text-muted" style="font-size:0.82rem;">No vendors identified yet</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -124,6 +157,22 @@ const functionInfo = [
         var note = document.getElementById('cw-maturity-note');
         if (note) note.style.display = 'block';
       }
+    })();
+  </script>
+
+  <script is:inline>
+    (function () {
+      var table = document.getElementById('crosswalk-table');
+      var buttons = document.querySelectorAll('[data-view-btn]');
+      var vendorMetaNote = document.getElementById('vendor-meta-note');
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var view = btn.getAttribute('data-view-btn');
+          table.setAttribute('data-view', view);
+          buttons.forEach(function (b) { b.classList.toggle('active', b === btn); });
+          if (vendorMetaNote) vendorMetaNote.style.display = view === 'vendors' ? 'inline' : 'none';
+        });
+      });
     })();
   </script>
 </BaseLayout>

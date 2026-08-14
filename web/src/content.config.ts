@@ -56,4 +56,25 @@ const nistCrosswalk = defineCollection({
   }),
 });
 
-export const collections = { pillars, capabilities, mappings, glossary, nistCrosswalk };
+const vendors = defineCollection({
+  loader: file('../data/vendors.yaml', {
+    parser: (text) => parseYaml(text).pillars,
+  }),
+  schema: z.object({
+    pillar: z.string(),
+    vendors: z.array(
+      z.object({
+        name: z.string(),
+        publisher: z.string(),
+        category: z.string().optional(),
+        source: z.string(),
+        url: z.string().optional(),
+      })
+    ),
+    generated_at: z.string(),
+    sources: z.array(z.string()),
+    disclaimer: z.string(),
+  }),
+});
+
+export const collections = { pillars, capabilities, mappings, glossary, nistCrosswalk, vendors };

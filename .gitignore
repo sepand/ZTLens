@@ -7,3 +7,6 @@ Thumbs.db
 web/node_modules/
 web/dist/
 web/.astro/
+
+# vendor-sync script
+scripts/vendor-sync/node_modules/

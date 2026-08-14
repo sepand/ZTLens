@@ -456,6 +456,45 @@ section { padding: 72px 0; }
   --fn-recover: #4ade80;
 }
 
+.crosswalk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  background: var(--bg-sunken);
+}
+.view-toggle-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.view-toggle-btn.active {
+  background: var(--bg-elevated);
+  color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.vendor-cell, .vendor-head { display: none; }
+.crosswalk[data-view="vendors"] .fn-cell,
+.crosswalk[data-view="vendors"] .fn-col { display: none; }
+.crosswalk[data-view="vendors"] .vendor-cell,
+.crosswalk[data-view="vendors"] .vendor-head { display: table-cell; }
+.vendor-chip { text-decoration: none; }
+a.vendor-chip:hover { border-color: var(--accent); text-decoration: none; }
+
 .crosswalk-scroll {
   overflow-x: auto;
   border: 1px solid var(--border);

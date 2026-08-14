@@ -1,0 +1,14 @@
+{
+  "name": "ztlens-vendor-sync",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pulls vendor listings from public cloud marketplace catalogs and writes data/vendors.yaml. Run by .github/workflows/sync-vendors.yml on a schedule; not part of the website build.",
+  "scripts": {
+    "sync": "node index.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-marketplace-discovery": "3.1105.0",
+    "js-yaml": "5.2.3"
+  }
+}

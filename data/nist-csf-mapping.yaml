@@ -1,5 +1,5 @@
 # Source-of-truth data for the Zero Trust Pillars x NIST CSF 2.0 crosswalk.
-# The table in /mappings/nist-csf-crosswalk.md and the web/nist-crosswalk
+# The table in /mappings/nist-csf-crosswalk.md and the web/zero-trust-matrix
 # page are both generated from this file.
 #
 # Pillars here follow a 7-pillar model commonly used in commercial ZT

@@ -1,0 +1,87 @@
+# Keyword matching used to map cloud marketplace category display names
+# to ZTLens' 7 DoD ZT RA 2.0 pillars. Category names are matched
+# case-insensitively as substrings against each keyword below. Edit
+# these lists to tune which marketplace categories map to which pillar
+# — no code changes needed.
+#
+# aws: keywords matched against AWS Marketplace category *display names*
+#      (discovered live via SearchFacets, so wording varies over time).
+# azureCategoryIds: best-guess Azure Marketplace categoryId slugs (see
+#      https://azure.microsoft.com/en-us/marketplace/marketplace-categories-industries).
+#      Verify/adjust once Azure API access is granted — these are our
+#      best guess at the slugs, not yet confirmed against a live call.
+
+User:
+  aws:
+    - identity
+    - access management
+    - authentication
+    - single sign-on
+    - iam
+  azureCategoryIds:
+    - identity
+    - security
+
+Device:
+  aws:
+    - endpoint
+    - device management
+    - mobile device
+    - patch management
+  azureCategoryIds:
+    - devices
+    - security
+
+Application & Workload:
+  aws:
+    - application security
+    - devsecops
+    - container security
+    - api security
+    - web application firewall
+  azureCategoryIds:
+    - devops
+    - security
+
+Data:
+  aws:
+    - data protection
+    - data loss prevention
+    - encryption
+    - key management
+    - data security
+  azureCategoryIds:
+    - security
+    - storage
+
+Network & Environment:
+  aws:
+    - network security
+    - firewall
+    - vpn
+    - network firewall
+    - ddos
+  azureCategoryIds:
+    - networking
+    - security
+
+Automation & Orchestration:
+  aws:
+    - orchestration
+    - security automation
+    - soar
+    - compliance automation
+  azureCategoryIds:
+    - it-management-tools
+    - security
+
+Visibility & Analytics:
+  aws:
+    - siem
+    - security analytics
+    - threat intelligence
+    - monitoring
+    - logging
+  azureCategoryIds:
+    - monitoring-and-diagnostics
+    - security

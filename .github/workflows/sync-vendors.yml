@@ -1,0 +1,92 @@
+name: Sync vendor data and deploy
+
+# Runs biweekly (1st and 15th of the month), pulling vendor listings from
+# public cloud marketplace catalogs into data/vendors.yaml, then rebuilds
+# and redeploys the site so the Zero Trust Matrix page's Vendors view stays
+# current. Also runnable on demand.
+#
+# Requires repo secrets:
+#   AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY — an IAM user/role with the
+#     AWSMarketplaceDiscoveryFullAccess policy. Self-serve, no approval
+#     needed from AWS.
+#   AZURE_MARKETPLACE_API_KEY — optional. Requires requesting access by
+#     email from the Microsoft Marketplace Catalog team (not self-serve).
+#     If unset, the Azure source is skipped and only AWS results are used.
+on:
+  schedule:
+    - cron: '0 6 1,15 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/vendor-sync/package-lock.json
+
+      - name: Install vendor-sync dependencies
+        working-directory: scripts/vendor-sync
+        run: npm ci
+
+      - name: Run vendor sync
+        working-directory: scripts/vendor-sync
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_MARKETPLACE_REGION || 'us-east-1' }}
+          AZURE_MARKETPLACE_API_KEY: ${{ secrets.AZURE_MARKETPLACE_API_KEY }}
+        run: npm run sync
+
+      - name: Commit updated vendor data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: sync vendor data from marketplace APIs [skip ci]'
+          file_pattern: data/vendors.yaml
+          commit_user_name: 'ztlens-bot'
+          commit_user_email: 'actions@github.com'
+
+      - name: Setup Node for site build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install site dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Build site
+        working-directory: web
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
