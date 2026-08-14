@@ -2,65 +2,108 @@
 # Regenerate with: cd scripts/vendor-sync && npm ci && npm run sync
 # Edit scripts/vendor-sync/pillar-keywords.yaml to change category matching.
 
-generated_at: '2026-08-14T05:45:24.695Z'
-sources: []
+generated_at: '2026-08-14T06:43:11.920Z'
+sources:
+  - gcp-marketplace-manual
 disclaimer: >-
   Identified from public marketplace category listings. Presence here is not a certification,
   partnership, or endorsement by ZTLens.
 pillars:
   - id: user
     pillar: User
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: Okta Identity Cloud
+        publisher: Okta
+        category: Identity and Access Management
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=okta
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.
   - id: device
     pillar: Device
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: CrowdStrike Falcon
+        publisher: CrowdStrike
+        category: Endpoint Protection
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=crowdstrike
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.
   - id: application-workload
     pillar: Application & Workload
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: Prisma Cloud
+        publisher: Palo Alto Networks
+        category: Application & Workload Security
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=prisma+cloud
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.
   - id: data
     pillar: Data
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: HashiCorp Vault
+        publisher: HashiCorp
+        category: Secrets & Key Management
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=hashicorp+vault
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.
   - id: network-environment
     pillar: Network & Environment
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: VM-Series Next-Generation Firewall
+        publisher: Palo Alto Networks
+        category: Network Security
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=palo+alto+vm-series
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.
   - id: automation-orchestration
     pillar: Automation & Orchestration
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: Splunk SOAR
+        publisher: Splunk
+        category: Security Orchestration & Automation
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=splunk
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.
   - id: visibility-analytics
     pillar: Visibility & Analytics
-    vendors: []
-    generated_at: '2026-08-14T05:45:24.695Z'
-    sources: []
+    vendors:
+      - name: Elastic Cloud
+        publisher: Elastic
+        category: Security Analytics
+        source: gcp-marketplace-manual
+        url: https://console.cloud.google.com/marketplace/browse?q=elastic
+    generated_at: '2026-08-14T06:43:11.920Z'
+    sources:
+      - gcp-marketplace-manual
     disclaimer: >-
       Identified from public marketplace category listings. Presence here is not a certification,
       partnership, or endorsement by ZTLens.

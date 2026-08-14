@@ -10,6 +10,13 @@ const vendorEntries = await getCollection('vendors');
 const vendorsByPillar = Object.fromEntries(vendorEntries.map((v) => [v.data.pillar, v.data.vendors]));
 const vendorMeta = vendorEntries[0]?.data ?? { generated_at: new Date().toISOString(), sources: [], disclaimer: '' };
 
+const SOURCE_LABELS: Record<string, string> = {
+  'aws-marketplace': 'AWS Marketplace',
+  'azure-marketplace': 'Azure Marketplace',
+  'gcp-marketplace-manual': 'GCP Marketplace (manually curated)',
+};
+const sourceLabel = (id: string) => SOURCE_LABELS[id] || id;
+
 const functions = [
   { key: 'govern', label: 'Govern', code: 'GV', var: '--fn-govern' },
   { key: 'identify', label: 'Identify', code: 'ID', var: '--fn-identify' },
@@ -57,7 +64,7 @@ const functionInfo = [
           <button type="button" class="view-toggle-btn" data-view-btn="vendors">Vendors</button>
         </div>
         <span class="text-muted" id="vendor-meta-note" style="font-size:0.8rem; display:none;">
-          Vendors last synced {new Date(vendorMeta.generated_at).toLocaleDateString()} from {vendorMeta.sources.length ? vendorMeta.sources.join(', ') : 'no configured source yet'}. {vendorMeta.disclaimer}
+          Vendors last synced {new Date(vendorMeta.generated_at).toLocaleDateString()} from {vendorMeta.sources.length ? vendorMeta.sources.map(sourceLabel).join(', ') : 'no configured source yet'}. {vendorMeta.disclaimer}
         </span>
       </div>
 
@@ -101,9 +108,9 @@ const functionInfo = [
                       <div class="cw-chip-list" style="flex-direction:row; flex-wrap:wrap;">
                         {pillarVendors.map((v) =>
                           v.url ? (
-                            <a class="cw-chip vendor-chip" href={v.url} target="_blank" rel="noopener" title={`${v.name} — via ${v.source}`}>{v.publisher}</a>
+                            <a class="cw-chip vendor-chip" href={v.url} target="_blank" rel="noopener" title={`${v.name} — via ${sourceLabel(v.source)}`}>{v.publisher}</a>
                           ) : (
-                            <span class="cw-chip vendor-chip" title={`${v.name} — via ${v.source}`}>{v.publisher}</span>
+                            <span class="cw-chip vendor-chip" title={`${v.name} — via ${sourceLabel(v.source)}`}>{v.publisher}</span>
                           )
                         )}
                       </div>

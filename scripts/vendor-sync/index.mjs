@@ -13,8 +13,13 @@
  *     Catalog team; not self-serve). Skipped silently if
  *     AZURE_MARKETPLACE_API_KEY isn't set.
  *   - Google Cloud Marketplace has no public category-search API as of
- *     this writing (only a console/procurement API), so it's not
- *     included. Revisit if Google publishes one.
+ *     this writing — its Consumer/Partner Procurement APIs cover only
+ *     orders, entitlements, and license pools, with no products.list or
+ *     search resource (verified against Google's own REST resource
+ *     tree). Revisit if Google publishes one. In the meantime,
+ *     manual-vendors.yaml carries a small hand-curated GCP Marketplace
+ *     seed list that's merged in on every run and untouched by the
+ *     automated fetch.
  *
  * Run by .github/workflows/sync-vendors.yml on a schedule. This script
  * only ever reads from marketplace APIs and writes data/vendors.yaml —
@@ -33,6 +38,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const KEYWORDS_PATH = path.join(__dirname, 'pillar-keywords.yaml');
+const MANUAL_VENDORS_PATH = path.join(__dirname, 'manual-vendors.yaml');
 const OUTPUT_PATH = path.join(REPO_ROOT, 'data', 'vendors.yaml');
 const MAX_VENDORS_PER_PILLAR = 8;
 
@@ -48,6 +54,10 @@ const PILLAR_IDS = {
 
 function loadKeywords() {
   return parseYaml(readFileSync(KEYWORDS_PATH, 'utf8'));
+}
+
+function loadManualVendors() {
+  return parseYaml(readFileSync(MANUAL_VENDORS_PATH, 'utf8'));
 }
 
 function dedupeVendors(vendors) {
@@ -167,6 +177,7 @@ async function fetchAzureVendors(pillarKeywords) {
 
 async function main() {
   const pillarKeywords = loadKeywords();
+  const manualVendors = loadManualVendors();
 
   const [awsResults, azureResults] = await Promise.all([
     fetchAwsVendors(pillarKeywords).catch((err) => {
@@ -181,7 +192,10 @@ async function main() {
 
   const sourcesUsed = new Set();
   const pillarVendorLists = Object.keys(pillarKeywords).map((pillar) => {
+    // Manual entries go first so they survive dedupe/the per-pillar cap
+    // ahead of live-fetched results.
     const combined = dedupeVendors([
+      ...(manualVendors[pillar] || []),
       ...(awsResults[pillar] || []),
       ...(azureResults[pillar] || []),
     ]).slice(0, MAX_VENDORS_PER_PILLAR);
