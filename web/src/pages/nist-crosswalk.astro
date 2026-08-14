@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const pillars = (await getCollection('nistCrosswalk')).sort((a, b) => a.data.order - b.data.order);
+const capabilities = (await getCollection('capabilities')).map((c) => ({ id: c.id, pillar: c.data.pillar }));
+const base = import.meta.env.BASE_URL;
 
 const functions = [
   { key: 'govern', label: 'Govern', code: 'GV', var: '--fn-govern' },
@@ -24,21 +26,24 @@ const functionInfo = [
 ---
 
 <BaseLayout
-  title="ZT Pillars × NIST CSF"
-  description="Zero Trust pillars (Identity, Network, Applications, Data, Infrastructure, Visibility & Analytics, Automation & Orchestration) mapped against the six NIST CSF 2.0 functions."
+  title="Zero Trust × NIST CSF Crosswalk"
+  description="DoD Zero Trust Reference Architecture 2.0 pillars mapped against the six NIST CSF 2.0 functions."
 >
   <section>
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Crosswalk</span>
-        <h2>Zero Trust Pillars × NIST CSF 2.0</h2>
+        <h2>Zero Trust × NIST CSF 2.0 Crosswalk</h2>
         <p>
-          Maps a 7-pillar Zero Trust model — Identity, Network, Applications,
-          Data, Infrastructure, Visibility &amp; Analytics, and Automation
-          &amp; Orchestration — against the six
+          Maps the <a href={`${base}/pillars`}>DoD ZT RA 2.0 pillars</a>
+          against the six
           <a href="https://www.nist.gov/cyberframework" target="_blank" rel="noopener">NIST Cybersecurity Framework 2.0</a>
           functions: Govern, Identify, Protect, Detect, Respond, Recover.
           Each cell lists illustrative capabilities, not an exhaustive control set.
+        </p>
+        <p class="text-muted" id="cw-maturity-note" style="display:none; font-size:0.85rem; margin-top:12px;">
+          The dot next to each pillar reflects your saved
+          <a href={`${base}/assessment`}>self-assessment</a> maturity for that pillar.
         </p>
       </div>
 
@@ -55,7 +60,10 @@ const functionInfo = [
           <tbody>
             {pillars.map((p) => (
               <tr>
-                <td class="pillar-col">{p.data.name}</td>
+                <td class="pillar-col">
+                  {p.data.dod_pillar}
+                  <span class="cw-maturity-dot" id={`cw-dot-${p.id}`} title="Not yet assessed"></span>
+                </td>
                 {functions.map((f) => {
                   const items = p.data.cells[f.key]
                     .split(';')
@@ -93,4 +101,29 @@ const functionInfo = [
       </div>
     </div>
   </section>
+
+  <script is:inline src={`${base}/assessment.js`}></script>
+  <script define:vars={{ capabilities, pillarRows: pillars.map((p) => ({ id: p.id, dodPillar: p.data.dod_pillar })) }}>
+    (function () {
+      var engine = window.ZTLensAssessment;
+      if (!engine) return;
+      var scores = engine.pillarScores(capabilities);
+      var anyAssessed = false;
+      pillarRows.forEach(function (row) {
+        var s = scores[row.dodPillar];
+        var dot = document.getElementById('cw-dot-' + row.id);
+        if (!dot) return;
+        if (s && s.score !== null) {
+          anyAssessed = true;
+          var stage = engine.nearestStage(s.score);
+          dot.classList.add('cw-dot-' + stage);
+          dot.title = 'Your maturity: ' + engine.STAGE_LABELS[stage] + ' (' + s.score.toFixed(1) + '/3, ' + s.answered + '/' + s.total + ' assessed)';
+        }
+      });
+      if (anyAssessed) {
+        var note = document.getElementById('cw-maturity-note');
+        if (note) note.style.display = 'block';
+      }
+    })();
+  </script>
 </BaseLayout>

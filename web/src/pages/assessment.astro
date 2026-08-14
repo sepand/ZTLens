@@ -1,0 +1,449 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pillars = (await getCollection('pillars')).sort((a, b) => a.data.order - b.data.order);
+const capabilities = await getCollection('capabilities');
+
+const capsByPillar = pillars.map((p) => ({
+  title: p.data.title,
+  order: p.data.order,
+  caps: capabilities.filter((c) => c.data.pillar === p.data.title),
+}));
+
+const cx = 160;
+const cy = 160;
+const maxR = 118;
+const axes = pillars.map((p, i) => {
+  const angle = -Math.PI / 2 + (i * 2 * Math.PI) / pillars.length;
+  return {
+    pillar: p.data.title,
+    ux: Math.cos(angle),
+    uy: Math.sin(angle),
+    labelX: cx + Math.cos(angle) * (maxR + 18),
+    labelY: cy + Math.sin(angle) * (maxR + 18),
+  };
+});
+
+const capabilitiesData = capabilities.map((c) => ({ id: c.id, pillar: c.data.pillar }));
+const capabilitiesFull = capabilities.map((c) => ({
+  id: c.id,
+  pillar: c.data.pillar,
+  capability: c.data.capability,
+  frameworks: c.data.frameworks.map((f) => f.framework),
+}));
+const allFrameworks = [...new Set(capabilities.flatMap((c) => c.data.frameworks.map((f) => f.framework)))].sort();
+
+const short = (title: string) =>
+  title
+    .replace('Application & Workload', 'App')
+    .replace('Network & Environment', 'Network')
+    .replace('Automation & Orchestration', 'Automation')
+    .replace('Visibility & Analytics', 'Visibility');
+---
+
+<BaseLayout
+  title="Self-Assessment"
+  description="Assess your organization's Zero Trust maturity per pillar, track progress over time, and export or import your results."
+>
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Just for you — stored only in this browser</span>
+        <h2>Zero Trust Maturity Self-Assessment</h2>
+        <p>
+          For each capability, pick the stage that best matches your current
+          state. Nothing is sent anywhere — your answers live in this
+          browser's local storage. Save a snapshot to track progress over
+          time, and export your results as JSON so you can back them up or
+          pick up later (even on a different device).
+        </p>
+      </div>
+
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div>
+            <h3 style="margin:0 0 4px; font-size:1rem;">Assessment scope</h3>
+            <p class="text-muted" style="margin:0; font-size:0.84rem;">
+              Track separate business units, systems, or legal entities as their own assessment — each keeps its own answers and history.
+            </p>
+          </div>
+          <div class="matrix-toolbar" style="margin:0;">
+            <select id="scope-select" aria-label="Active assessment scope"></select>
+            <button class="icon-btn" id="btn-scope-new" type="button">New</button>
+            <button class="icon-btn" id="btn-scope-rename" type="button">Rename</button>
+            <button class="icon-btn" id="btn-scope-delete" type="button">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="assess-toolbar">
+        <button class="btn btn-primary" id="btn-save-snapshot" type="button">Save Snapshot</button>
+        <button class="btn btn-ghost" id="btn-export" type="button">Export JSON</button>
+        <label class="btn btn-ghost" style="margin:0;">
+          Import JSON
+          <input type="file" id="file-import" accept="application/json" style="display:none;" />
+        </label>
+        <button class="btn btn-ghost" id="btn-reset" type="button">Reset This Scope</button>
+      </div>
+      <p class="assess-status" id="assess-status" aria-live="polite"></p>
+
+      <div class="card" style="margin-bottom: 40px;">
+        <h3 style="margin:0 0 4px; font-size:1rem;">Compliance focus</h3>
+        <p class="text-muted" style="margin:0 0 14px; font-size:0.84rem;">
+          Select the frameworks that apply to this scope to see a gap report of
+          the capabilities tied to them, ranked by how far they are from Optimal.
+        </p>
+        <div id="framework-focus-list" style="display:flex; flex-wrap:wrap; gap:8px;">
+          {allFrameworks.map((fw) => (
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.82rem; border:1px solid var(--border); padding:6px 12px; border-radius:8px; cursor:pointer;">
+              <input type="checkbox" class="framework-focus-checkbox" value={fw} style="margin:0;" />
+              {fw}
+            </label>
+          ))}
+        </div>
+        <div id="gap-report-container" style="margin-top: 18px;"></div>
+      </div>
+
+      <div class="assess-summary-grid">
+        <div class="card">
+          <h3 style="margin:0 0 16px; font-size:1rem;">Maturity by pillar</h3>
+          <div class="radar-wrap">
+            <svg viewBox="0 0 320 320" role="img" aria-label="Radar chart of maturity by pillar">
+              <circle class="radar-grid" cx={cx} cy={cy} r={maxR * 0.333}></circle>
+              <circle class="radar-grid" cx={cx} cy={cy} r={maxR * 0.666}></circle>
+              <circle class="radar-grid" cx={cx} cy={cy} r={maxR}></circle>
+              {axes.map((a) => (
+                <line class="radar-axis" x1={cx} y1={cy} x2={cx + a.ux * maxR} y2={cy + a.uy * maxR}></line>
+              ))}
+              <polygon id="radar-score-poly" class="radar-score-poly" points=""></polygon>
+              {axes.map((a, i) => (
+                <circle class="radar-dot" id={`radar-dot-${i}`} cx={cx} cy={cy} r="4"></circle>
+              ))}
+              {axes.map((a) => (
+                <text class="radar-label" x={a.labelX} y={a.labelY}>{short(a.pillar)}</text>
+              ))}
+            </svg>
+            <div class="overall-score">
+              <b id="overall-score-value">—</b>
+              <span>overall maturity (of 3.0)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 16px; font-size:1rem;">Pillar scores</h3>
+          <div class="pillar-score-list" id="pillar-score-list">
+            {pillars.map((p) => (
+              <div class="pillar-score-row" data-pillar-row={p.data.title}>
+                <span class="psr-name">{p.data.title}</span>
+                <span>
+                  <span class="stage" id={`psr-badge-${p.id}`}>Not assessed</span>
+                  <span class="psr-meta" id={`psr-meta-${p.id}`}></span>
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <h3 style="margin:28px 0 12px; font-size:1rem;">Progress history</h3>
+          <div id="history-container">
+            <p class="history-empty">No snapshots saved yet — click "Save Snapshot" once you've answered a few capabilities.</p>
+          </div>
+        </div>
+      </div>
+
+      {capsByPillar.map((group) => (
+        <div class="assess-pillar-group">
+          <span class="num">Pillar {group.order}</span>
+          <h3>{group.title}</h3>
+          {group.caps.map((c) => (
+            <div class="assess-cap">
+              <span class="assess-cap-name">{c.data.capability}</span>
+              <div class="stage-picker" role="radiogroup" aria-label={c.data.capability}>
+                <input type="radio" name={`cap-${c.id}`} id={`${c.id}-1`} value="1" data-cap={c.id} />
+                <label for={`${c.id}-1`} data-stage="1">Traditional</label>
+                <input type="radio" name={`cap-${c.id}`} id={`${c.id}-2`} value="2" data-cap={c.id} />
+                <label for={`${c.id}-2`} data-stage="2">Advanced</label>
+                <input type="radio" name={`cap-${c.id}`} id={`${c.id}-3`} value="3" data-cap={c.id} />
+                <label for={`${c.id}-3`} data-stage="3">Optimal</label>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline src={`${import.meta.env.BASE_URL}/assessment.js`}></script>
+<script
+  define:vars={{
+    config: {
+      axes: axes.map((a) => ({ pillar: a.pillar, ux: a.ux, uy: a.uy })),
+      capabilities: capabilitiesData,
+      capabilitiesFull,
+      cx,
+      cy,
+      maxR,
+      pillarIds: pillars.map((p) => ({ id: p.id, title: p.data.title })),
+    },
+  }}
+>
+  (function () {
+    var engine = window.ZTLensAssessment;
+
+    function fmtScore(score) {
+      return score === null || score === undefined ? '—' : score.toFixed(1);
+    }
+
+    function renderScopeSelector() {
+      var select = document.getElementById('scope-select');
+      var scopes = engine.getScopes();
+      var activeId = engine.getActiveScopeId();
+      select.innerHTML = scopes
+        .map(function (s) {
+          return '<option value="' + s.id + '"' + (s.id === activeId ? ' selected' : '') + '>' + s.name + '</option>';
+        })
+        .join('');
+    }
+
+    function renderFrameworkFocusCheckboxes() {
+      var focus = engine.getFrameworkFocus();
+      document.querySelectorAll('.framework-focus-checkbox').forEach(function (cb) {
+        cb.checked = focus.indexOf(cb.value) !== -1;
+      });
+    }
+
+    function renderGapReport() {
+      var focus = engine.getFrameworkFocus();
+      var container = document.getElementById('gap-report-container');
+      if (!focus.length) {
+        container.innerHTML = '<p class="history-empty">Select one or more frameworks above to see which tied capabilities are furthest from Optimal in this scope.</p>';
+        return;
+      }
+      var answers = engine.getAnswers();
+      var matched = config.capabilitiesFull.filter(function (c) {
+        return c.frameworks.some(function (f) { return focus.indexOf(f) !== -1; });
+      });
+      if (!matched.length) {
+        container.innerHTML = '<p class="history-empty">No capabilities in the catalog are tied to the selected framework(s) yet.</p>';
+        return;
+      }
+      matched.sort(function (a, b) {
+        var sa = answers[a.id] || 0;
+        var sb = answers[b.id] || 0;
+        return sa - sb;
+      });
+      var rows = matched.map(function (c) {
+        var stage = answers[c.id] || null;
+        var badge = stage
+          ? '<span class="stage ' + engine.STAGE_CLASS[stage] + '">' + engine.STAGE_LABELS[stage] + '</span>'
+          : '<span class="stage">Not assessed</span>';
+        var matchedFw = c.frameworks.filter(function (f) { return focus.indexOf(f) !== -1; });
+        var fwChips = matchedFw.map(function (f) { return '<span class="fw-chip">' + f + '</span>'; }).join(' ');
+        return (
+          '<tr><td>' + c.capability + '</td><td>' + c.pillar + '</td><td>' + badge + '</td><td>' + fwChips + '</td></tr>'
+        );
+      });
+      container.innerHTML =
+        '<div class="history-table-wrap"><table class="history-table"><thead><tr><th>Capability</th><th>Pillar</th><th>Maturity</th><th>Matched frameworks</th></tr></thead><tbody>' +
+        rows.join('') +
+        '</tbody></table></div>';
+    }
+
+    function render() {
+      var answers = engine.getAnswers();
+      var scores = engine.pillarScores(config.capabilities, answers);
+
+      // radio states — clear first so switching scopes doesn't leave stale checks
+      document.querySelectorAll('.stage-picker input[type="radio"]').forEach(function (i) { i.checked = false; });
+      Object.keys(answers).forEach(function (capId) {
+        var el = document.getElementById(capId + '-' + answers[capId]);
+        if (el) el.checked = true;
+      });
+
+      renderFrameworkFocusCheckboxes();
+      renderGapReport();
+
+      // pillar badges
+      config.pillarIds.forEach(function (p) {
+        var s = scores[p.title];
+        var badge = document.getElementById('psr-badge-' + p.id);
+        var meta = document.getElementById('psr-meta-' + p.id);
+        if (!badge) return;
+        badge.classList.remove('stage-traditional', 'stage-advanced', 'stage-optimal');
+        if (s && s.score !== null) {
+          var stage = engine.nearestStage(s.score);
+          badge.textContent = engine.STAGE_LABELS[stage] + ' (' + s.score.toFixed(1) + ')';
+          badge.classList.add(engine.STAGE_CLASS[stage]);
+        } else {
+          badge.textContent = 'Not assessed';
+        }
+        if (meta && s) meta.textContent = s.answered + '/' + s.total;
+      });
+
+      // radar
+      var points = [];
+      config.axes.forEach(function (a, i) {
+        var s = scores[a.pillar];
+        var score = s ? s.score : null;
+        var r = score ? (score / 3) * config.maxR : 0;
+        var x = config.cx + a.ux * r;
+        var y = config.cy + a.uy * r;
+        points.push(x + ',' + y);
+        var dot = document.getElementById('radar-dot-' + i);
+        if (dot) { dot.setAttribute('cx', x); dot.setAttribute('cy', y); }
+      });
+      var poly = document.getElementById('radar-score-poly');
+      if (poly) poly.setAttribute('points', points.join(' '));
+
+      var overall = engine.overallScore(scores);
+      document.getElementById('overall-score-value').textContent = overall === null ? '—' : overall.toFixed(1);
+
+      renderHistory();
+    }
+
+    function renderHistory() {
+      var history = engine.getHistory();
+      var container = document.getElementById('history-container');
+      if (!history.length) {
+        container.innerHTML = '<p class="history-empty">No snapshots saved yet — click &quot;Save Snapshot&quot; once you\'ve answered a few capabilities.</p>';
+        return;
+      }
+      var sorted = history.slice().sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); });
+      var first = history[0];
+      var rows = sorted.map(function (h) {
+        var vals = Object.keys(h.scores).map(function (k) { return h.scores[k]; }).filter(function (v) { return v !== null && v !== undefined; });
+        var avg = vals.length ? vals.reduce(function (a, b) { return a + b; }, 0) / vals.length : null;
+        var firstVals = Object.keys(first.scores).map(function (k) { return first.scores[k]; }).filter(function (v) { return v !== null && v !== undefined; });
+        var firstAvg = firstVals.length ? firstVals.reduce(function (a, b) { return a + b; }, 0) / firstVals.length : null;
+        var delta = avg !== null && firstAvg !== null && h.timestamp !== first.timestamp ? avg - firstAvg : null;
+        var deltaHtml = '';
+        if (delta !== null) {
+          var cls = delta >= 0 ? 'hist-delta-up' : 'hist-delta-down';
+          var sign = delta >= 0 ? '+' : '';
+          deltaHtml = '<span class="' + cls + '">' + sign + delta.toFixed(1) + '</span>';
+        }
+        var date = new Date(h.timestamp);
+        return (
+          '<tr><td>' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</td>' +
+          '<td>' + (avg === null ? '—' : avg.toFixed(1)) + '</td>' +
+          '<td>' + (deltaHtml || '—') + '</td>' +
+          '<td><button class="icon-btn" data-delete-snapshot="' + h.timestamp + '">Delete</button></td></tr>'
+        );
+      });
+      container.innerHTML =
+        '<div class="history-table-wrap"><table class="history-table"><thead><tr><th>Saved</th><th>Avg score</th><th>vs. first</th><th></th></tr></thead><tbody>' +
+        rows.join('') +
+        '</tbody></table></div>';
+
+      container.querySelectorAll('[data-delete-snapshot]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          engine.deleteSnapshot(btn.getAttribute('data-delete-snapshot'));
+          renderHistory();
+        });
+      });
+    }
+
+    function status(msg) {
+      document.getElementById('assess-status').textContent = msg;
+    }
+
+    document.querySelectorAll('.stage-picker input[type="radio"]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        engine.setAnswer(input.getAttribute('data-cap'), parseInt(input.value, 10));
+        render();
+        status('Saved.');
+      });
+    });
+
+    document.getElementById('btn-save-snapshot').addEventListener('click', function () {
+      engine.saveSnapshot(config.capabilities);
+      renderHistory();
+      status('Snapshot saved — see it in the history table below.');
+    });
+
+    document.getElementById('btn-export').addEventListener('click', function () {
+      engine.downloadExport('ztlens-assessment.json');
+      status('Exported ztlens-assessment.json.');
+    });
+
+    document.getElementById('file-import').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        var result = engine.importBundle(String(reader.result));
+        if (result.ok) {
+          renderScopeSelector();
+          render();
+          status('Imported ' + file.name + ' as a new scope.');
+        } else {
+          status('Import failed: ' + result.error);
+        }
+        e.target.value = '';
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', function () {
+      if (!confirm('Clear all answers and saved history for this scope? This cannot be undone.')) return;
+      engine.clearAnswers();
+      engine.clearHistory();
+      render();
+      status('Cleared this scope.');
+    });
+
+    document.getElementById('scope-select').addEventListener('change', function (e) {
+      engine.setActiveScopeId(e.target.value);
+      render();
+      status('Switched scope.');
+    });
+
+    document.getElementById('btn-scope-new').addEventListener('click', function () {
+      var name = prompt('Name this assessment (e.g. a business unit, system, or legal entity):');
+      if (!name) return;
+      engine.createScope(name.trim());
+      renderScopeSelector();
+      render();
+      status('Created new scope "' + name.trim() + '".');
+    });
+
+    document.getElementById('btn-scope-rename').addEventListener('click', function () {
+      var scopes = engine.getScopes();
+      var active = scopes.filter(function (s) { return s.id === engine.getActiveScopeId(); })[0];
+      var name = prompt('Rename this scope:', active ? active.name : '');
+      if (!name) return;
+      engine.renameScope(engine.getActiveScopeId(), name.trim());
+      renderScopeSelector();
+      status('Renamed scope.');
+    });
+
+    document.getElementById('btn-scope-delete').addEventListener('click', function () {
+      var scopes = engine.getScopes();
+      if (scopes.length <= 1) {
+        status('Can\'t delete the only scope — clear it instead, or create a new one first.');
+        return;
+      }
+      if (!confirm('Delete this scope and all its saved answers/history? This cannot be undone.')) return;
+      engine.deleteScope(engine.getActiveScopeId());
+      renderScopeSelector();
+      render();
+      status('Scope deleted.');
+    });
+
+    document.querySelectorAll('.framework-focus-checkbox').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var checked = Array.prototype.slice
+          .call(document.querySelectorAll('.framework-focus-checkbox'))
+          .filter(function (c) { return c.checked; })
+          .map(function (c) { return c.value; });
+        engine.setFrameworkFocus(checked);
+        renderGapReport();
+      });
+    });
+
+    renderScopeSelector();
+    render();
+  })();
+</script>

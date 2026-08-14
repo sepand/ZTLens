@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+const origin = 'https://sepand.github.io';
+
+const endpoints = [
+  {
+    path: '/api/capabilities.json',
+    desc: 'All capability-matrix entries: pillar, capability name, Traditional/Advanced/Optimal descriptions, and framework tie-ins.',
+  },
+  {
+    path: '/api/nist-crosswalk.json',
+    desc: 'The Zero Trust x NIST CSF 2.0 crosswalk: each pillar (with its nearest DoD ZT RA 2.0 pillar name) and its Govern/Identify/Protect/Detect/Respond/Recover capability lists.',
+  },
+];
+---
+
+<BaseLayout title="Data API" description="Static JSON endpoints for the ZTLens capability matrix and NIST CSF crosswalk data.">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">For builders</span>
+        <h2>Data API</h2>
+        <p>
+          ZTLens's content is structured YAML under the hood, so it's also published as
+          plain, static JSON — no backend, no auth, no rate limits. Fetch it directly
+          into a script, spreadsheet, dashboard, or agent.
+        </p>
+      </div>
+
+      {endpoints.map((e) => (
+        <div class="card" style="margin-bottom:16px;">
+          <p class="mono" style="margin:0 0 8px; font-size:0.9rem;">
+            <span class="fw-chip" style="margin-right:8px;">GET</span>
+            <a href={`${base}${e.path}`}>{origin}{base}{e.path}</a>
+          </p>
+          <p class="text-muted" style="margin:0;">{e.desc}</p>
+        </div>
+      ))}
+
+      <div class="card" style="background: var(--bg-sunken); box-shadow:none;">
+        <p style="margin:0 0 10px; font-weight:700;">Example</p>
+        <pre style="margin:0; overflow-x:auto; font-size:0.82rem;"><code>{`fetch("${origin}${base}/api/capabilities.json")
+  .then((r) => r.json())
+  .then((data) => console.log(data.capabilities));`}</code></pre>
+      </div>
+
+      <p class="text-muted" style="margin-top:24px; font-size:0.88rem;">
+        These endpoints are generated at build time from
+        <a href="https://github.com/sepand/ZTLens/blob/main/data/capabilities.yaml" target="_blank" rel="noopener">data/capabilities.yaml</a>
+        and
+        <a href="https://github.com/sepand/ZTLens/blob/main/data/nist-csf-mapping.yaml" target="_blank" rel="noopener">data/nist-csf-mapping.yaml</a>.
+        They refresh whenever the site redeploys — not in real time. Licensed
+        CC BY-SA 4.0 like the rest of the content; attribution appreciated.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

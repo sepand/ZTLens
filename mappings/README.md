@@ -5,10 +5,9 @@ control frameworks. These are starting points for building your own
 compliance crosswalk — not a substitute for formal control mapping or audit
 guidance.
 
-See also: [Zero Trust Pillars × NIST CSF 2.0 Crosswalk](nist-csf-crosswalk.md) —
-maps Identity, Network, Applications, Data, Infrastructure, Visibility &
-Analytics, and Automation & Orchestration against the six NIST CSF 2.0
-functions (Govern, Identify, Protect, Detect, Respond, Recover).
+See also: [Zero Trust × NIST CSF 2.0 Crosswalk](nist-csf-crosswalk.md) —
+maps the DoD ZT RA 2.0 pillars against the six NIST CSF 2.0 functions
+(Govern, Identify, Protect, Detect, Respond, Recover).
 
 ## ZT framework cross-walk
 

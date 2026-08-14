@@ -6,12 +6,15 @@
 # reference architectures (Identity, Network, Applications, Data,
 # Infrastructure, Visibility & Analytics, Automation & Orchestration) —
 # a close cousin of, but not identical to, the DoD ZT RA 2.0 pillar set
-# used in /capability-matrix. NIST CSF 2.0 functions are the six columns:
-# Govern, Identify, Protect, Detect, Respond, Recover.
+# used in /capability-matrix. `dod_pillar` is an illustrative 1:1 mapping
+# to the nearest DoD ZT RA 2.0 pillar name (not a formal equivalence).
+# NIST CSF 2.0 functions are the six columns: Govern, Identify, Protect,
+# Detect, Respond, Recover.
 
 - id: identity
   name: Identity
   order: 1
+  dod_pillar: User
   cells:
     govern: Identity governance policy; RBAC/ABAC standards; access review cadence
     identify: Identity inventory; entitlement and privileged-account discovery; identity risk scoring
@@ -23,6 +26,7 @@
 - id: network
   name: Network
   order: 2
+  dod_pillar: Network & Environment
   cells:
     govern: Network segmentation policy; ZTNA and remote-access standards
     identify: Network asset and topology discovery; traffic baselining
@@ -34,6 +38,7 @@
 - id: applications
   name: Applications
   order: 3
+  dod_pillar: Application & Workload
   cells:
     govern: Secure SDLC policy; application risk classification standards
     identify: Application inventory; dependency/SBOM tracking; attack-surface mapping
@@ -45,6 +50,7 @@
 - id: data
   name: Data
   order: 4
+  dod_pillar: Data
   cells:
     govern: Data classification policy; data governance and retention standards
     identify: Data discovery and classification; sensitive-data inventory and lineage
@@ -56,6 +62,7 @@
 - id: infrastructure
   name: Infrastructure
   order: 5
+  dod_pillar: Device
   cells:
     govern: Infrastructure hardening baselines; patch and change-management policy
     identify: Asset/CMDB inventory; vulnerability scanning; configuration drift detection
@@ -67,6 +74,7 @@
 - id: visibility-analytics
   name: Visibility & Analytics
   order: 6
+  dod_pillar: Visibility & Analytics
   cells:
     govern: Logging and monitoring policy; telemetry retention standards
     identify: Log source inventory; visibility coverage-gap analysis
@@ -78,6 +86,7 @@
 - id: automation-orchestration
   name: Automation & Orchestration
   order: 7
+  dod_pillar: Automation & Orchestration
   cells:
     govern: Automation and playbook governance; change control for policy-as-code
     identify: Manual-process inventory (automation candidates); playbook coverage gaps

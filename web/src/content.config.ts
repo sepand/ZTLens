@@ -51,6 +51,7 @@ const nistCrosswalk = defineCollection({
   schema: z.object({
     name: z.string(),
     order: z.number(),
+    dod_pillar: z.string(),
     cells: nistCrosswalkCellSchema,
   }),
 });

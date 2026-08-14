@@ -146,3 +146,148 @@
   optimal: Predictive analytics correlating threat intel with real-time access decisions
   frameworks:
     - {framework: NIST 800-53, ref: RA-3}
+
+# --- Enterprise / financial-services additions ---
+# Deeper controls typical of a large regulated financial institution's
+# control catalog, beyond a single-org-unit baseline.
+
+- id: user-pam
+  pillar: User
+  capability: Privileged Access Management (PAM)
+  traditional: Shared admin accounts; standing privileged access
+  advanced: PAM vault with just-in-time checkout and session recording for privileged accounts
+  optimal: Zero standing privilege; automated privileged-session analytics with anomaly-based revocation
+  frameworks:
+    - {framework: NIST 800-53, ref: AC-6}
+    - {framework: NYDFS 500, ref: "500.7"}
+    - {framework: PCI-DSS v4.0, ref: "7"}
+
+- id: user-sod
+  pillar: User
+  capability: Segregation of Duties (SoD) Enforcement
+  traditional: Manual SoD review during periodic audits
+  advanced: Automated SoD conflict detection in IAM/ERP systems
+  optimal: Continuous, real-time SoD enforcement blocking conflicting access at request time
+  frameworks:
+    - {framework: SOX (ITGC), ref: "Access Management"}
+    - {framework: NIST 800-53, ref: AC-5}
+
+- id: device-vendor-risk
+  pillar: Device
+  capability: Third-Party & Vendor Device Risk
+  traditional: No visibility into vendor/contractor device posture
+  advanced: Vendor devices required to enroll in MDM or pass a posture check before access
+  optimal: Continuous vendor device risk scoring integrated into access decisions
+  frameworks:
+    - {framework: NYDFS 500, ref: "500.11"}
+    - {framework: GLBA (Safeguards Rule), ref: "16 CFR 314.4(f)"}
+
+- id: device-firmware-integrity
+  pillar: Device
+  capability: Firmware & Supply Chain Integrity
+  traditional: No firmware or hardware supply-chain attestation
+  advanced: Periodic firmware/BIOS integrity checks
+  optimal: Continuous hardware-rooted supply-chain attestation at every boot/session
+  frameworks:
+    - {framework: NIST 800-53, ref: SR-11}
+
+- id: app-vendor-risk
+  pillar: Application & Workload
+  capability: Third-Party Software & Vendor Risk Management
+  traditional: Annual vendor security questionnaires
+  advanced: Continuous vendor security ratings and SBOM review for critical vendors
+  optimal: Automated, continuous third-party risk scoring gating production integration
+  frameworks:
+    - {framework: NYDFS 500, ref: "500.11"}
+    - {framework: GLBA (Safeguards Rule), ref: "16 CFR 314.4(f)"}
+    - {framework: SOX (ITGC), ref: "Vendor Management"}
+
+- id: app-transaction-integrity
+  pillar: Application & Workload
+  capability: Payment & Transaction Integrity Controls
+  traditional: Manual dual-control sign-off on high-value transactions
+  advanced: Automated dual-control with anomaly-based transaction holds
+  optimal: Real-time, ML-based transaction risk scoring integrated into the release/approval workflow
+  frameworks:
+    - {framework: PCI-DSS v4.0, ref: "6"}
+    - {framework: SWIFT CSP, ref: "2.1"}
+
+- id: data-key-management
+  pillar: Data
+  capability: Key Management / HSM
+  traditional: Software-based key storage; manual rotation
+  advanced: Centralized KMS/HSM with policy-based rotation
+  optimal: Hardware-backed, automated key lifecycle management with real-time revocation
+  frameworks:
+    - {framework: PCI-DSS v4.0, ref: "3.6"}
+    - {framework: NYDFS 500, ref: "500.15"}
+
+- id: data-residency
+  pillar: Data
+  capability: Data Residency & Sovereignty Controls
+  traditional: No enforcement of data location
+  advanced: Policy-based data residency enforcement for regulated data
+  optimal: Automated, continuously verified data residency compliance across all storage and processing locations
+  frameworks:
+    - {framework: GLBA (Safeguards Rule), ref: "16 CFR 314.4(c)"}
+    - {framework: NYDFS 500, ref: "500.03"}
+
+- id: network-third-party-connectivity
+  pillar: Network & Environment
+  capability: Third-Party Network Connectivity Controls
+  traditional: Static VPN or leased-line trust for partners
+  advanced: Segmented, policy-scoped partner connectivity (ZTNA for B2B)
+  optimal: Dynamic, risk-based partner network access with continuous session verification
+  frameworks:
+    - {framework: NYDFS 500, ref: "500.11"}
+    - {framework: PCI-DSS v4.0, ref: "1"}
+
+- id: network-dr-resilience
+  pillar: Network & Environment
+  capability: Disaster Recovery & Resilience Architecture
+  traditional: Manual failover; infrequent DR testing
+  advanced: Automated failover with regular DR testing
+  optimal: Continuously validated, automated multi-region resilience with real-time failover
+  frameworks:
+    - {framework: NYDFS 500, ref: "500.16"}
+    - {framework: FFIEC IT Handbook, ref: "Business Continuity"}
+
+- id: automation-change-management
+  pillar: Automation & Orchestration
+  capability: Change Management / Policy-as-Code Governance
+  traditional: Manual change tickets; ad hoc approval
+  advanced: Automated CI/CD-gated change approval with policy checks
+  optimal: Fully automated, auditable change pipeline with real-time compliance validation
+  frameworks:
+    - {framework: SOX (ITGC), ref: "Change Management"}
+    - {framework: NIST 800-53, ref: CM-3}
+
+- id: automation-regulatory-reporting
+  pillar: Automation & Orchestration
+  capability: Regulatory Reporting Automation
+  traditional: Manual compilation of compliance evidence
+  advanced: Semi-automated evidence collection for audits
+  optimal: Continuous, automated compliance reporting and regulator-ready evidence packages
+  frameworks:
+    - {framework: NYDFS 500, ref: "500.17"}
+    - {framework: SOX (ITGC), ref: "Monitoring"}
+
+- id: visibility-insider-threat
+  pillar: Visibility & Analytics
+  capability: Insider Threat Program
+  traditional: Reactive investigation only, after the fact
+  advanced: UEBA-driven insider risk scoring with defined triggers
+  optimal: Continuous, cross-pillar insider risk analytics feeding automated response
+  frameworks:
+    - {framework: NIST 800-53, ref: PM-12}
+    - {framework: NYDFS 500, ref: "500.14"}
+
+- id: visibility-third-party-risk
+  pillar: Visibility & Analytics
+  capability: Third-Party & Fourth-Party Risk Visibility
+  traditional: Point-in-time vendor assessments
+  advanced: Continuous vendor security posture monitoring (ratings services)
+  optimal: Real-time vendor and subcontractor (fourth-party) risk visibility integrated into access and data-sharing decisions
+  frameworks:
+    - {framework: GLBA (Safeguards Rule), ref: "16 CFR 314.4(f)"}
+    - {framework: NYDFS 500, ref: "500.11"}
