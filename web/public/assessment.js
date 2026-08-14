@@ -55,6 +55,7 @@
       name: name || 'Default',
       createdAt: new Date().toISOString(),
       answers: {},
+      notes: {},
       history: [],
       frameworkFocus: [],
     };
@@ -183,7 +184,38 @@
   function clearAnswers() {
     mutateActiveScope(function (scope) {
       scope.answers = {};
+      scope.notes = {};
     });
+  }
+
+  function getNotes() {
+    return getActiveScope().notes || {};
+  }
+
+  function setNote(capabilityId, text) {
+    mutateActiveScope(function (scope) {
+      if (!scope.notes) scope.notes = {};
+      if (text) {
+        scope.notes[capabilityId] = text;
+      } else {
+        delete scope.notes[capabilityId];
+      }
+    });
+    return getNotes();
+  }
+
+  // Advanced/Optimal claims (stage >= 2) that have no supporting note.
+  // Returns { total, withEvidence, withoutEvidence: [capabilityId, ...] }
+  function evidenceCoverage(answers) {
+    answers = answers || getAnswers();
+    var notes = getNotes();
+    var claims = Object.keys(answers).filter(function (id) { return answers[id] >= 2; });
+    var withoutEvidence = claims.filter(function (id) { return !notes[id]; });
+    return {
+      total: claims.length,
+      withEvidence: claims.length - withoutEvidence.length,
+      withoutEvidence: withoutEvidence,
+    };
   }
 
   function getHistory() {
@@ -272,10 +304,11 @@
     return JSON.stringify(
       {
         format: 'ztlens-assessment',
-        version: 2,
+        version: 3,
         exportedAt: new Date().toISOString(),
         scopeName: scope.name,
         answers: scope.answers,
+        notes: scope.notes || {},
         history: scope.history,
         frameworkFocus: scope.frameworkFocus || [],
       },
@@ -312,6 +345,7 @@
     var scopes = getAllScopes();
     var scope = blankScope(data.scopeName ? data.scopeName + ' (imported)' : 'Imported assessment');
     scope.answers = data.answers || {};
+    scope.notes = data.notes && typeof data.notes === 'object' ? data.notes : {};
     scope.history = Array.isArray(data.history) ? data.history : [];
     scope.frameworkFocus = Array.isArray(data.frameworkFocus) ? data.frameworkFocus : [];
     scopes[scope.id] = scope;
@@ -333,6 +367,9 @@
     getAnswers: getAnswers,
     setAnswer: setAnswer,
     clearAnswers: clearAnswers,
+    getNotes: getNotes,
+    setNote: setNote,
+    evidenceCoverage: evidenceCoverage,
     getHistory: getHistory,
     getFrameworkFocus: getFrameworkFocus,
     setFrameworkFocus: setFrameworkFocus,

@@ -149,7 +149,21 @@ const short = (title: string) =>
           <div id="history-container">
             <p class="history-empty">No snapshots saved yet — click "Save Snapshot" once you've answered a few capabilities.</p>
           </div>
+
+          <div class="evidence-stat" id="evidence-stat">
+            <b id="evidence-stat-value">—</b> of your Advanced/Optimal claims have a supporting note.
+          </div>
         </div>
+      </div>
+
+      <div class="section-head" style="margin-bottom: 20px;">
+        <h2 style="font-size:1.3rem;">Rate each capability</h2>
+        <p style="font-size:0.88rem;">
+          Read all three descriptions before picking one — "Optimal" is a specific,
+          high bar, not just the best-sounding option. Add a short note (tool,
+          audit date, control owner) to back up Advanced/Optimal claims; unsupported
+          ones are flagged so reviewers can tell self-reported from evidenced.
+        </p>
       </div>
 
       {capsByPillar.map((group) => (
@@ -157,15 +171,37 @@ const short = (title: string) =>
           <span class="num">Pillar {group.order}</span>
           <h3>{group.title}</h3>
           {group.caps.map((c) => (
-            <div class="assess-cap">
-              <span class="assess-cap-name">{c.data.capability}</span>
-              <div class="stage-picker" role="radiogroup" aria-label={c.data.capability}>
-                <input type="radio" name={`cap-${c.id}`} id={`${c.id}-1`} value="1" data-cap={c.id} />
-                <label for={`${c.id}-1`} data-stage="1">Traditional</label>
-                <input type="radio" name={`cap-${c.id}`} id={`${c.id}-2`} value="2" data-cap={c.id} />
-                <label for={`${c.id}-2`} data-stage="2">Advanced</label>
-                <input type="radio" name={`cap-${c.id}`} id={`${c.id}-3`} value="3" data-cap={c.id} />
-                <label for={`${c.id}-3`} data-stage="3">Optimal</label>
+            <div class="assess-cap-block">
+              <div class="assess-cap-head">
+                <span class="assess-cap-name">{c.data.capability}</span>
+                <span class="evidence-missing-badge" id={`evidence-flag-${c.id}`} style="display:none;">⚠ No evidence noted</span>
+              </div>
+              <div class="stage-option-grid" role="radiogroup" aria-label={c.data.capability}>
+                <div class="stage-option" data-stage="1">
+                  <input type="radio" name={`cap-${c.id}`} id={`${c.id}-1`} value="1" data-cap={c.id} />
+                  <label for={`${c.id}-1`}>
+                    <span class="so-title">Traditional</span>
+                    <span class="so-desc">{c.data.traditional}</span>
+                  </label>
+                </div>
+                <div class="stage-option" data-stage="2">
+                  <input type="radio" name={`cap-${c.id}`} id={`${c.id}-2`} value="2" data-cap={c.id} />
+                  <label for={`${c.id}-2`}>
+                    <span class="so-title">Advanced</span>
+                    <span class="so-desc">{c.data.advanced}</span>
+                  </label>
+                </div>
+                <div class="stage-option" data-stage="3">
+                  <input type="radio" name={`cap-${c.id}`} id={`${c.id}-3`} value="3" data-cap={c.id} />
+                  <label for={`${c.id}-3`}>
+                    <span class="so-title">Optimal</span>
+                    <span class="so-desc">{c.data.optimal}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="evidence-field">
+                <label for={`note-${c.id}`}>Evidence / notes (optional)</label>
+                <input type="text" id={`note-${c.id}`} data-note-for={c.id} placeholder="e.g. tool name, audit date, ticket #, control owner…" />
               </div>
             </div>
           ))}
@@ -251,12 +287,31 @@ const short = (title: string) =>
         '</tbody></table></div>';
     }
 
+    function renderNotesAndEvidence(answers) {
+      var notes = engine.getNotes();
+      config.capabilitiesFull.forEach(function (c) {
+        var input = document.getElementById('note-' + c.id);
+        if (input) input.value = notes[c.id] || '';
+        var flag = document.getElementById('evidence-flag-' + c.id);
+        if (!flag) return;
+        var stage = answers[c.id];
+        flag.style.display = stage >= 2 && !notes[c.id] ? 'inline' : 'none';
+      });
+      var coverage = engine.evidenceCoverage(answers);
+      var statEl = document.getElementById('evidence-stat-value');
+      if (statEl) {
+        statEl.textContent = coverage.total
+          ? coverage.withEvidence + '/' + coverage.total
+          : 'No Advanced/Optimal claims yet';
+      }
+    }
+
     function render() {
       var answers = engine.getAnswers();
       var scores = engine.pillarScores(config.capabilities, answers);
 
       // radio states — clear first so switching scopes doesn't leave stale checks
-      document.querySelectorAll('.stage-picker input[type="radio"]').forEach(function (i) { i.checked = false; });
+      document.querySelectorAll('input[data-cap]').forEach(function (i) { i.checked = false; });
       Object.keys(answers).forEach(function (capId) {
         var el = document.getElementById(capId + '-' + answers[capId]);
         if (el) el.checked = true;
@@ -264,6 +319,7 @@ const short = (title: string) =>
 
       renderFrameworkFocusCheckboxes();
       renderGapReport();
+      renderNotesAndEvidence(answers);
 
       // pillar badges
       config.pillarIds.forEach(function (p) {
@@ -349,10 +405,18 @@ const short = (title: string) =>
       document.getElementById('assess-status').textContent = msg;
     }
 
-    document.querySelectorAll('.stage-picker input[type="radio"]').forEach(function (input) {
+    document.querySelectorAll('input[data-cap]').forEach(function (input) {
       input.addEventListener('change', function () {
         engine.setAnswer(input.getAttribute('data-cap'), parseInt(input.value, 10));
         render();
+        status('Saved.');
+      });
+    });
+
+    document.querySelectorAll('input[data-note-for]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        engine.setNote(input.getAttribute('data-note-for'), input.value.trim());
+        renderNotesAndEvidence(engine.getAnswers());
         status('Saved.');
       });
     });
