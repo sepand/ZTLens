@@ -11,9 +11,11 @@ name: Sync vendor data and deploy
 #     attached (aws-marketplace:SearchFacets + SearchListings — the two
 #     calls this script actually makes). Self-serve, no AWS approval
 #     needed. Static keys by design here (not OIDC role assumption).
-#   AZURE_MARKETPLACE_API_KEY — optional. Requires requesting access by
-#     email from the Microsoft Marketplace Catalog team (not self-serve).
-#     If unset, the Azure source is skipped and only AWS results are used.
+#   AZURE_MARKETPLACE_API_KEY — optional. Requires enrolling the Azure
+#     subscription in the "Discovery Api Key Early Access" preview
+#     feature (may need an Azure support ticket for approval), then
+#     generating a key via an ARM API call (see README.md). Not self-
+#     serve. If unset, the Azure source is skipped gracefully.
 on:
   schedule:
     - cron: '0 6 1,15 * *'

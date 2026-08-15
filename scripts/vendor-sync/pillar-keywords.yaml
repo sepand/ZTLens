@@ -6,6 +6,10 @@
 #
 # aws: keywords matched against AWS Marketplace category *display names*
 #      (discovered live via SearchFacets, so wording varies over time).
+#      Kept broad on purpose — a false-positive category match just
+#      means a handful of irrelevant listings get filtered out by the
+#      per-pillar cap; a missed keyword means a whole category's
+#      vendors never surface at all.
 # azureCategoryIds: best-guess Azure Marketplace categoryId slugs (see
 #      https://azure.microsoft.com/en-us/marketplace/marketplace-categories-industries).
 #      Verify/adjust once Azure API access is granted — these are our
@@ -18,6 +22,10 @@ User:
     - authentication
     - single sign-on
     - iam
+    - privileged access
+    - identity governance
+    - multi-factor
+    - passwordless
   azureCategoryIds:
     - identity
     - security
@@ -28,6 +36,10 @@ Device:
     - device management
     - mobile device
     - patch management
+    - edr
+    - endpoint detection
+    - unified endpoint
+    - mdm
   azureCategoryIds:
     - devices
     - security
@@ -39,6 +51,11 @@ Application & Workload:
     - container security
     - api security
     - web application firewall
+    - cloud workload
+    - cloud security posture
+    - cspm
+    - code security
+    - software composition
   azureCategoryIds:
     - devops
     - security
@@ -50,6 +67,10 @@ Data:
     - encryption
     - key management
     - data security
+    - secrets management
+    - casb
+    - cloud access security
+    - tokenization
   azureCategoryIds:
     - security
     - storage
@@ -61,6 +82,11 @@ Network & Environment:
     - vpn
     - network firewall
     - ddos
+    - secure access service edge
+    - sase
+    - zero trust network
+    - intrusion detection
+    - intrusion prevention
   azureCategoryIds:
     - networking
     - security
@@ -71,6 +97,9 @@ Automation & Orchestration:
     - security automation
     - soar
     - compliance automation
+    - governance
+    - workflow automation
+    - incident response
   azureCategoryIds:
     - it-management-tools
     - security
@@ -82,6 +111,10 @@ Visibility & Analytics:
     - threat intelligence
     - monitoring
     - logging
+    - extended detection
+    - xdr
+    - observability
+    - log management
   azureCategoryIds:
     - monitoring-and-diagnostics
     - security

@@ -3,15 +3,20 @@
  * Pulls vendor listings from public cloud marketplace catalogs and writes
  * data/vendors.yaml, grouped by ZTLens' 7 DoD ZT RA 2.0 pillars.
  *
- * Sources:
- *   - AWS Marketplace Discovery API (requires AWS credentials with the
- *     AWSMarketplaceDiscoveryFullAccess policy — self-serve, no approval
- *     needed). Category IDs are discovered live via SearchFacets, then
- *     matched to pillars by keyword against the category display name.
- *   - Azure Marketplace Catalog API (optional — requires an X-API-Key
- *     that must be requested by email from the Microsoft Marketplace
- *     Catalog team; not self-serve). Skipped silently if
- *     AZURE_MARKETPLACE_API_KEY isn't set.
+ * Sources, merged per pillar with live results winning ties over
+ * curated/manual fallbacks (see the merge order comment in main()):
+ *   - AWS Marketplace Discovery API — requires AWS credentials for an
+ *     IAM user/role with ONLY aws-marketplace:SearchFacets and
+ *     aws-marketplace:SearchListings (see aws-iam-policy.json); self-
+ *     serve, no AWS approval needed. Category IDs are discovered live
+ *     via SearchFacets, then matched to pillars by keyword against the
+ *     category display name.
+ *   - Azure Marketplace Catalog API (optional) — requires an X-API-Key
+ *     generated via an Azure Resource Manager call, which itself
+ *     requires enrolling the subscription in the "Discovery Api Key
+ *     Early Access" preview feature (Azure Portal → Preview features;
+ *     approval may require an Azure support ticket). Skipped silently
+ *     if AZURE_MARKETPLACE_API_KEY isn't set.
  *   - Google Cloud Marketplace has no public category-search API as of
  *     this writing — its Consumer/Partner Procurement APIs cover only
  *     orders, entitlements, and license pools, with no products.list or
@@ -20,6 +25,12 @@
  *     manual-vendors.yaml carries a small hand-curated GCP Marketplace
  *     seed list that's merged in on every run and untouched by the
  *     automated fetch.
+ *   - curated-enterprise-vendors.yaml — a cloud-agnostic floor list of
+ *     vendors widely deployed by large enterprises, merged in last and
+ *     never subject to the live-results cap, so well-known names can't
+ *     get crowded out by whatever the live marketplace search happens
+ *     to surface (rating/relevance sort doesn't reliably track "which
+ *     vendors enterprises actually use").
  *
  * Run by .github/workflows/sync-vendors.yml on a schedule. This script
  * only ever reads from marketplace APIs and writes data/vendors.yaml —
@@ -39,8 +50,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const KEYWORDS_PATH = path.join(__dirname, 'pillar-keywords.yaml');
 const MANUAL_VENDORS_PATH = path.join(__dirname, 'manual-vendors.yaml');
+const CURATED_VENDORS_PATH = path.join(__dirname, 'curated-enterprise-vendors.yaml');
 const OUTPUT_PATH = path.join(REPO_ROOT, 'data', 'vendors.yaml');
-const MAX_VENDORS_PER_PILLAR = 8;
+const MAX_LIVE_VENDORS_PER_PILLAR = 20; // cap on AWS/Azure results only
+const SEARCH_RESULTS_PER_CATEGORY = 25; // AWS SearchListings page size per matched category
 
 const PILLAR_IDS = {
   User: 'user',
@@ -58,6 +71,10 @@ function loadKeywords() {
 
 function loadManualVendors() {
   return parseYaml(readFileSync(MANUAL_VENDORS_PATH, 'utf8'));
+}
+
+function loadCuratedVendors() {
+  return parseYaml(readFileSync(CURATED_VENDORS_PATH, 'utf8'));
 }
 
 function dedupeVendors(vendors) {
@@ -104,11 +121,14 @@ async function fetchAwsVendors(pillarKeywords) {
     const pillarVendors = [];
     for (const cat of matched) {
       try {
+        // RELEVANCE rather than rating: rating-sort buries enterprise
+        // vendors whose deals go through private offers and rarely
+        // accumulate public marketplace reviews.
         const res = await client.send(
           new SearchListingsCommand({
             filters: [{ filterType: 'CATEGORY', filterValues: [cat.value] }],
-            maxResults: 15,
-            sortBy: 'AVERAGE_CUSTOMER_RATING',
+            maxResults: SEARCH_RESULTS_PER_CATEGORY,
+            sortBy: 'RELEVANCE',
             sortOrder: 'DESCENDING',
           })
         );
@@ -125,8 +145,8 @@ async function fetchAwsVendors(pillarKeywords) {
         console.warn(`AWS: SearchListings failed for category "${cat.displayName}": ${err.message}`);
       }
     }
-    results[pillar] = dedupeVendors(pillarVendors).slice(0, MAX_VENDORS_PER_PILLAR);
-    console.log(`AWS: pillar "${pillar}" -> ${results[pillar].length} vendors.`);
+    results[pillar] = dedupeVendors(pillarVendors).slice(0, MAX_LIVE_VENDORS_PER_PILLAR);
+    console.log(`AWS: pillar "${pillar}" -> ${results[pillar].length} vendors (across ${matched.length} matched categories).`);
   }
 
   return results;
@@ -138,9 +158,10 @@ async function fetchAzureVendors(pillarKeywords) {
   const apiKey = process.env.AZURE_MARKETPLACE_API_KEY;
   if (!apiKey) {
     console.log(
-      'Azure: AZURE_MARKETPLACE_API_KEY not set, skipping. Request access from ' +
-        'the Microsoft Marketplace Catalog team to enable this source (see docs at ' +
-        'https://learn.microsoft.com/en-us/rest/api/marketplacecatalog/dataplane/products/list).'
+      'Azure: AZURE_MARKETPLACE_API_KEY not set, skipping. Enroll the subscription in the ' +
+        '"Discovery Api Key Early Access" preview feature (Azure Portal -> Preview features), ' +
+        'then generate a key via POST /subscriptions/{id}/providers/Microsoft.Marketplace/keys/{alias}/create ' +
+        '(see README.md).'
     );
     return {};
   }
@@ -164,7 +185,7 @@ async function fetchAzureVendors(pillarKeywords) {
         category: (p.categoryIds || [])[0],
         source: 'azure-marketplace',
       }));
-      results[pillar] = dedupeVendors(pillarVendors).slice(0, MAX_VENDORS_PER_PILLAR);
+      results[pillar] = dedupeVendors(pillarVendors).slice(0, MAX_LIVE_VENDORS_PER_PILLAR);
       console.log(`Azure: pillar "${pillar}" -> ${results[pillar].length} vendors.`);
     } catch (err) {
       console.warn(`Azure: fetch failed for pillar "${pillar}": ${err.message}`);
@@ -178,6 +199,7 @@ async function fetchAzureVendors(pillarKeywords) {
 async function main() {
   const pillarKeywords = loadKeywords();
   const manualVendors = loadManualVendors();
+  const curatedVendors = loadCuratedVendors();
 
   const [awsResults, azureResults] = await Promise.all([
     fetchAwsVendors(pillarKeywords).catch((err) => {
@@ -192,13 +214,17 @@ async function main() {
 
   const sourcesUsed = new Set();
   const pillarVendorLists = Object.keys(pillarKeywords).map((pillar) => {
-    // Manual entries go first so they survive dedupe/the per-pillar cap
-    // ahead of live-fetched results.
-    const combined = dedupeVendors([
-      ...(manualVendors[pillar] || []),
-      ...(awsResults[pillar] || []),
-      ...(azureResults[pillar] || []),
-    ]).slice(0, MAX_VENDORS_PER_PILLAR);
+    // Live results (AWS/Azure) go first so their more specific,
+    // verified listing URLs win over a curated fallback when the same
+    // vendor shows up in both. GCP's manual list goes next since GCP
+    // has no live source at all. The curated-enterprise floor list is
+    // deduped in LAST and is never subject to the live cap below — it
+    // exists specifically so well-known enterprise vendors can't get
+    // pushed out by whatever the live search happens to surface, which
+    // would defeat its purpose as a guaranteed floor.
+    const live = dedupeVendors([...(awsResults[pillar] || []), ...(azureResults[pillar] || [])]);
+    const withManual = dedupeVendors([...live, ...(manualVendors[pillar] || [])]);
+    const combined = dedupeVendors([...withManual, ...(curatedVendors[pillar] || [])]);
     combined.forEach((v) => sourcesUsed.add(v.source));
     return { id: PILLAR_IDS[pillar], pillar, vendors: combined };
   });
