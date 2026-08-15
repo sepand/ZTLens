@@ -6,9 +6,11 @@ name: Sync vendor data and deploy
 # current. Also runnable on demand.
 #
 # Requires repo secrets:
-#   AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY — an IAM user/role with the
-#     AWSMarketplaceDiscoveryFullAccess policy. Self-serve, no approval
-#     needed from AWS.
+#   AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY — an IAM user with ONLY the
+#     least-privilege policy in scripts/vendor-sync/aws-iam-policy.json
+#     attached (aws-marketplace:SearchFacets + SearchListings — the two
+#     calls this script actually makes). Self-serve, no AWS approval
+#     needed. Static keys by design here (not OIDC role assumption).
 #   AZURE_MARKETPLACE_API_KEY — optional. Requires requesting access by
 #     email from the Microsoft Marketplace Catalog team (not self-serve).
 #     If unset, the Azure source is skipped and only AWS results are used.
