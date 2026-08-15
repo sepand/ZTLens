@@ -2,7 +2,7 @@
 # Regenerate with: cd scripts/vendor-sync && npm ci && npm run sync
 # Edit scripts/vendor-sync/pillar-keywords.yaml to change category matching.
 
-generated_at: '2026-08-15T05:54:09.550Z'
+generated_at: '2026-08-15T06:05:33.134Z'
 sources:
   - curated-enterprise
   - gcp-marketplace-manual
@@ -16,39 +16,46 @@ pillars:
       - name: Okta Identity Cloud
         publisher: Okta
         category: Identity and Access Management
+        function: protect
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=okta
       - name: Okta
         publisher: Okta
         category: Identity and Access Management
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Okta
       - name: Microsoft Entra ID
         publisher: Microsoft
         category: Identity and Access Management
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Microsoft+Entra
       - name: Ping Identity
         publisher: Ping Identity
         category: Identity and Access Management
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Ping+Identity
       - name: CyberArk
         publisher: CyberArk
         category: Privileged Access Management
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=CyberArk
       - name: SailPoint
         publisher: SailPoint
         category: Identity Governance
+        function: govern
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=SailPoint
       - name: BeyondTrust
         publisher: BeyondTrust
         category: Privileged Access Management
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=BeyondTrust
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual
@@ -61,29 +68,34 @@ pillars:
       - name: CrowdStrike Falcon
         publisher: CrowdStrike
         category: Endpoint Protection
+        function: detect
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=crowdstrike
       - name: Microsoft Defender for Endpoint
         publisher: Microsoft
         category: Endpoint Protection
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Microsoft+Defender
       - name: SentinelOne Singularity
         publisher: SentinelOne
         category: Endpoint Protection
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=SentinelOne
       - name: Tanium
         publisher: Tanium
         category: Endpoint Management
+        function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Tanium
       - name: VMware Carbon Black
         publisher: Broadcom
         category: Endpoint Protection
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Carbon+Black
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual
@@ -96,29 +108,34 @@ pillars:
       - name: Prisma Cloud
         publisher: Palo Alto Networks
         category: Application & Workload Security
+        function: protect
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=prisma+cloud
       - name: Wiz
         publisher: Wiz
         category: Cloud Security Posture Management
+        function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Wiz
       - name: Snyk
         publisher: Snyk
         category: Application Security
+        function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Snyk
       - name: Aqua Security
         publisher: Aqua Security
         category: Container & Cloud Native Security
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Aqua+Security
       - name: Checkmarx
         publisher: Checkmarx
         category: Application Security
+        function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Checkmarx
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual
@@ -131,29 +148,34 @@ pillars:
       - name: HashiCorp Vault
         publisher: HashiCorp
         category: Secrets & Key Management
+        function: protect
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=hashicorp+vault
       - name: Varonis
         publisher: Varonis
         category: Data Security
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Varonis
       - name: Netskope
         publisher: Netskope
         category: Data Loss Prevention / CASB
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Netskope
       - name: Forcepoint
         publisher: Forcepoint
         category: Data Loss Prevention
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Forcepoint
       - name: Thales CipherTrust
         publisher: Thales
         category: Key Management / Encryption
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Thales+CipherTrust
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual
@@ -166,29 +188,34 @@ pillars:
       - name: VM-Series Next-Generation Firewall
         publisher: Palo Alto Networks
         category: Network Security
+        function: protect
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=palo+alto+vm-series
       - name: FortiGate Next-Generation Firewall
         publisher: Fortinet
         category: Network Security
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=FortiGate
       - name: Cisco Secure Firewall
         publisher: Cisco
         category: Network Security
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Cisco+Secure+Firewall
       - name: Zscaler Internet Access
         publisher: Zscaler
         category: Secure Access Service Edge (SASE)
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Zscaler
       - name: Check Point CloudGuard
         publisher: Check Point
         category: Network Security
+        function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Check+Point+CloudGuard
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual
@@ -201,25 +228,29 @@ pillars:
       - name: Splunk SOAR
         publisher: Splunk
         category: Security Orchestration & Automation
+        function: respond
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=splunk
       - name: Cortex XSOAR
         publisher: Palo Alto Networks
         category: Security Orchestration & Automation
+        function: respond
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Cortex+XSOAR
       - name: Tines
         publisher: Tines
         category: Security Automation
+        function: respond
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Tines
       - name: ServiceNow Security Operations
         publisher: ServiceNow
         category: Security Orchestration & Automation
+        function: respond
         source: curated-enterprise
         url: >-
           https://aws.amazon.com/marketplace/search/results?searchTerms=ServiceNow+Security+Operations
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual
@@ -232,39 +263,46 @@ pillars:
       - name: Elastic Cloud
         publisher: Elastic
         category: Security Analytics
+        function: detect
         source: gcp-marketplace-manual
         url: https://console.cloud.google.com/marketplace/browse?q=elastic
       - name: Splunk Enterprise Security
         publisher: Splunk
         category: SIEM
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Splunk+Enterprise+Security
       - name: Microsoft Sentinel
         publisher: Microsoft
         category: SIEM
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Microsoft+Sentinel
       - name: Datadog
         publisher: Datadog
         category: Security Monitoring & Analytics
+        function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Datadog
       - name: Elastic Security
         publisher: Elastic
         category: SIEM
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Elastic+Security
       - name: IBM QRadar
         publisher: IBM
         category: SIEM
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=IBM+QRadar
       - name: Rapid7 InsightIDR
         publisher: Rapid7
         category: SIEM
+        function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Rapid7
-    generated_at: '2026-08-15T05:54:09.550Z'
+    generated_at: '2026-08-15T06:05:33.134Z'
     sources:
       - curated-enterprise
       - gcp-marketplace-manual

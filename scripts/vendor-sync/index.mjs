@@ -89,6 +89,33 @@ function dedupeVendors(vendors) {
   return out;
 }
 
+// Best-effort classification of a live marketplace listing into one of
+// the 6 NIST CSF 2.0 functions, so live results can slot into the same
+// per-function columns as the curated/manual entries (which are
+// hand-assigned). There's no function signal in the marketplace APIs
+// themselves, so this is a keyword heuristic over the category name and
+// listing text — checked in this order because a listing can plausibly
+// match several; more specific functions are checked before falling
+// back to 'protect', which is the most common primary framing for
+// security marketplace listings in general.
+const FUNCTION_KEYWORDS = {
+  recover: ['backup', 'disaster recovery', 'recovery', 'restore', 'resilience'],
+  respond: ['orchestration', 'soar', 'incident response', 'response', 'remediation', 'playbook'],
+  govern: ['governance', 'policy management', 'compliance management', 'risk management', 'audit'],
+  identify: ['inventory', 'discovery', 'asset management', 'vulnerability', 'posture management', 'assessment', 'scanning'],
+  detect: ['detection', 'siem', 'analytics', 'monitoring', 'threat intelligence', 'anomaly', 'xdr', 'edr', 'observability'],
+};
+const FUNCTION_CHECK_ORDER = ['recover', 'respond', 'govern', 'identify', 'detect'];
+const DEFAULT_FUNCTION = 'protect';
+
+function classifyFunction(text) {
+  const lower = (text || '').toLowerCase();
+  for (const fn of FUNCTION_CHECK_ORDER) {
+    if (FUNCTION_KEYWORDS[fn].some((k) => lower.includes(k))) return fn;
+  }
+  return DEFAULT_FUNCTION;
+}
+
 // ---------- AWS Marketplace ----------
 
 async function fetchAwsVendors(pillarKeywords) {
@@ -137,6 +164,7 @@ async function fetchAwsVendors(pillarKeywords) {
             name: listing.listingName,
             publisher: listing.publisher?.displayName || 'Unknown',
             category: cat.displayName,
+            function: classifyFunction(`${cat.displayName} ${listing.listingName} ${listing.shortDescription || ''}`),
             source: 'aws-marketplace',
             url: listing.listingId ? `https://aws.amazon.com/marketplace/pp/${listing.listingId}` : undefined,
           });
@@ -183,6 +211,7 @@ async function fetchAzureVendors(pillarKeywords) {
         name: p.displayName,
         publisher: p.publisherDisplayName || 'Unknown',
         category: (p.categoryIds || [])[0],
+        function: classifyFunction(`${(p.categoryIds || []).join(' ')} ${p.displayName}`),
         source: 'azure-marketplace',
       }));
       results[pillar] = dedupeVendors(pillarVendors).slice(0, MAX_LIVE_VENDORS_PER_PILLAR);

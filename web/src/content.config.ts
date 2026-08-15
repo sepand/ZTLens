@@ -67,6 +67,7 @@ const vendors = defineCollection({
         name: z.string(),
         publisher: z.string(),
         category: z.string().optional(),
+        function: z.enum(['govern', 'identify', 'protect', 'detect', 'respond', 'recover']),
         source: z.string(),
         url: z.string().optional(),
       })

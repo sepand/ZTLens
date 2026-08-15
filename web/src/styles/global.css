@@ -487,11 +487,11 @@ section { padding: 72px 0; }
   box-shadow: var(--shadow);
 }
 
-.vendor-cell, .vendor-head { display: none; }
-.crosswalk[data-view="vendors"] .fn-cell,
-.crosswalk[data-view="vendors"] .fn-col { display: none; }
-.crosswalk[data-view="vendors"] .vendor-cell,
-.crosswalk[data-view="vendors"] .vendor-head { display: table-cell; }
+/* Each fn-cell holds two chip-lists (capabilities, vendors); only one
+   shows at a time depending on the table's data-view. */
+.fn-cell .vendor-chips { display: none; }
+.crosswalk[data-view="vendors"] .fn-cell .cap-chips { display: none; }
+.crosswalk[data-view="vendors"] .fn-cell .vendor-chips { display: flex; }
 .vendor-chip { text-decoration: none; }
 a.vendor-chip:hover { border-color: var(--accent); text-decoration: none; }
 

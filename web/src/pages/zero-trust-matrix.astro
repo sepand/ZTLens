@@ -7,7 +7,15 @@ const capabilities = (await getCollection('capabilities')).map((c) => ({ id: c.i
 const base = import.meta.env.BASE_URL;
 
 const vendorEntries = await getCollection('vendors');
-const vendorsByPillar = Object.fromEntries(vendorEntries.map((v) => [v.data.pillar, v.data.vendors]));
+// vendorsByPillarFn[pillarName][functionKey] -> vendor[]
+const vendorsByPillarFn: Record<string, Record<string, typeof vendorEntries[number]['data']['vendors']>> = {};
+for (const v of vendorEntries) {
+  const byFn: Record<string, typeof v.data.vendors> = {};
+  for (const vendor of v.data.vendors) {
+    (byFn[vendor.function] ??= []).push(vendor);
+  }
+  vendorsByPillarFn[v.data.pillar] = byFn;
+}
 const vendorMeta = vendorEntries[0]?.data ?? { generated_at: new Date().toISOString(), sources: [], disclaimer: '' };
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -76,12 +84,11 @@ const functionInfo = [
               {functions.map((f) => (
                 <th class="fn-col" style={`--fn-color: var(${f.var})`}>{f.label}</th>
               ))}
-              <th class="vendor-cell vendor-head">Identified vendors</th>
             </tr>
           </thead>
           <tbody>
             {pillars.map((p) => {
-              const pillarVendors = vendorsByPillar[p.data.dod_pillar] || [];
+              const fnVendors = vendorsByPillarFn[p.data.dod_pillar] || {};
               return (
                 <tr>
                   <td class="pillar-col">
@@ -93,31 +100,30 @@ const functionInfo = [
                       .split(';')
                       .map((s) => s.trim())
                       .filter(Boolean);
+                    const cellVendors = fnVendors[f.key] || [];
                     return (
                       <td class="fn-cell" style={`--fn-color: var(${f.var})`}>
-                        <div class="cw-chip-list">
+                        <div class="cw-chip-list cap-chips">
                           {items.map((item) => (
                             <span class="cw-chip">{item}</span>
                           ))}
                         </div>
+                        <div class="cw-chip-list vendor-chips">
+                          {cellVendors.length > 0 ? (
+                            cellVendors.map((v) =>
+                              v.url ? (
+                                <a class="cw-chip vendor-chip" href={v.url} target="_blank" rel="noopener" title={`${v.name} — via ${sourceLabel(v.source)}`}>{v.publisher}</a>
+                              ) : (
+                                <span class="cw-chip vendor-chip" title={`${v.name} — via ${sourceLabel(v.source)}`}>{v.publisher}</span>
+                              )
+                            )
+                          ) : (
+                            <span class="text-muted" style="font-size:0.78rem;">—</span>
+                          )}
+                        </div>
                       </td>
                     );
                   })}
-                  <td class="vendor-cell">
-                    {pillarVendors.length > 0 ? (
-                      <div class="cw-chip-list" style="flex-direction:row; flex-wrap:wrap;">
-                        {pillarVendors.map((v) =>
-                          v.url ? (
-                            <a class="cw-chip vendor-chip" href={v.url} target="_blank" rel="noopener" title={`${v.name} — via ${sourceLabel(v.source)}`}>{v.publisher}</a>
-                          ) : (
-                            <span class="cw-chip vendor-chip" title={`${v.name} — via ${sourceLabel(v.source)}`}>{v.publisher}</span>
-                          )
-                        )}
-                      </div>
-                    ) : (
-                      <span class="text-muted" style="font-size:0.82rem;">No vendors identified yet</span>
-                    )}
-                  </td>
                 </tr>
               );
             })}

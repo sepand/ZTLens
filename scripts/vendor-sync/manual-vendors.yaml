@@ -10,12 +10,18 @@
 # the named marketplace as of the date below, but this isn't verified by
 # a live API call the way AWS/Azure entries are — spot-check periodically.
 #
+# `function` assigns each vendor to the NIST CSF 2.0 function
+# (govern/identify/protect/detect/respond/recover) its product is most
+# associated with, matching the classification used in
+# curated-enterprise-vendors.yaml.
+#
 # last_reviewed: 2026-08-14
 
 User:
   - name: Okta Identity Cloud
     publisher: Okta
     category: Identity and Access Management
+    function: protect
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=okta
 
@@ -23,6 +29,7 @@ Device:
   - name: CrowdStrike Falcon
     publisher: CrowdStrike
     category: Endpoint Protection
+    function: detect
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=crowdstrike
 
@@ -30,6 +37,7 @@ Application & Workload:
   - name: Prisma Cloud
     publisher: Palo Alto Networks
     category: Application & Workload Security
+    function: protect
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=prisma+cloud
 
@@ -37,6 +45,7 @@ Data:
   - name: HashiCorp Vault
     publisher: HashiCorp
     category: Secrets & Key Management
+    function: protect
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=hashicorp+vault
 
@@ -44,6 +53,7 @@ Network & Environment:
   - name: VM-Series Next-Generation Firewall
     publisher: Palo Alto Networks
     category: Network Security
+    function: protect
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=palo+alto+vm-series
 
@@ -51,6 +61,7 @@ Automation & Orchestration:
   - name: Splunk SOAR
     publisher: Splunk
     category: Security Orchestration & Automation
+    function: respond
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=splunk
 
@@ -58,5 +69,6 @@ Visibility & Analytics:
   - name: Elastic Cloud
     publisher: Elastic
     category: Security Analytics
+    function: detect
     source: gcp-marketplace-manual
     url: https://console.cloud.google.com/marketplace/browse?q=elastic
