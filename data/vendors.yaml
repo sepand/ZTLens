@@ -2,7 +2,7 @@
 # Regenerate with: cd scripts/vendor-sync && npm ci && npm run sync
 # Edit scripts/vendor-sync/pillar-keywords.yaml to change category matching.
 
-generated_at: '2026-09-01T11:12:17.576Z'
+generated_at: '2026-09-15T11:14:00.824Z'
 sources:
   - aws-marketplace
   - curated-enterprise
@@ -56,7 +56,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=BeyondTrust
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -97,7 +97,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Carbon+Black
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -138,7 +138,7 @@ pillars:
         function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Checkmarx
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -179,7 +179,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Thales+CipherTrust
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -220,7 +220,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Check+Point+CloudGuard
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -231,7 +231,7 @@ pillars:
   - id: automation-orchestration
     pillar: Automation & Orchestration
     vendors:
-      - name: Prisma Browser for Small Business
+      - name: Prisma Browser for Business
         publisher: Palo Alto Networks
         category: Cloud Governance
         function: govern
@@ -261,6 +261,12 @@ pillars:
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-lrceyvgks3z6o
+      - name: Okta Workforce - Starter
+        publisher: Okta, Inc
+        category: Cloud Governance
+        function: govern
+        source: aws-marketplace
+        url: https://aws.amazon.com/marketplace/pp/prodview-ikjixnsj5vogk
       - name: IBM Verify Identity Access
         publisher: IBM Software
         category: Cloud Governance
@@ -273,12 +279,6 @@ pillars:
         function: respond
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-ukvsu4lwl7j6c
-      - name: Okta Workforce - Starter
-        publisher: Okta, Inc
-        category: Cloud Governance
-        function: govern
-        source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-ikjixnsj5vogk
       - name: IBM Security Verify Governance
         publisher: IBM Software
         category: Cloud Governance
@@ -297,18 +297,24 @@ pillars:
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-z2ivuhfjx3hqa
-      - name: Cisco Duo - Premier Edition
-        publisher: Cisco Systems, Inc.
-        category: Cloud Governance
-        function: govern
-        source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-4zpn2qxfjx2i4
       - name: FortiPAM
         publisher: Fortinet Inc.
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-qayh7a3k4x7fu
+      - name: Cisco Duo - Premier Edition
+        publisher: Cisco Systems, Inc.
+        category: Cloud Governance
+        function: govern
+        source: aws-marketplace
+        url: https://aws.amazon.com/marketplace/pp/prodview-4zpn2qxfjx2i4
+      - name: Cloud Resilience Assessment Report
+        publisher: ControlMonkey
+        category: Cloud Governance
+        function: recover
+        source: aws-marketplace
+        url: https://aws.amazon.com/marketplace/pp/prodview-jsmz7ziu3sqoa
       - name: Check Point SASE Private Access (formerly Harmony SASE)
         publisher: Check Point Software Technologies
         category: Cloud Governance
@@ -321,36 +327,30 @@ pillars:
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-aciq4fyplkpgy
-      - name: VM-series - Advanced security Subs (PAYG) using CFT templates
-        publisher: Palo Alto Networks
-        category: Cloud Governance
-        function: govern
-        source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-7rmiex3uw3wfy
       - name: Observo AI
         publisher: SentinelOne
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-ofvcippnsr6ww
-      - name: IBM Guardium Data Protection (30-day trial)
-        publisher: IBM Software
+      - name: VM-series - Advanced security Subs (PAYG) using CFT templates
+        publisher: Palo Alto Networks
         category: Cloud Governance
         function: govern
         source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-rsj7kf4j2nzig
+        url: https://aws.amazon.com/marketplace/pp/prodview-7rmiex3uw3wfy
       - name: Check Point SASE Internet Access (formerly Harmony SASE)
         publisher: Check Point Software Technologies
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-7h3xusmzeqcpe
-      - name: 1Password Unified Access
-        publisher: 1Password
+      - name: IBM Guardium Data Protection (30-day trial)
+        publisher: IBM Software
         category: Cloud Governance
         function: govern
         source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-bjhyzqot3bhdc
+        url: https://aws.amazon.com/marketplace/pp/prodview-rsj7kf4j2nzig
       - name: Splunk SOAR
         publisher: Splunk
         category: Security Orchestration & Automation
@@ -376,7 +376,7 @@ pillars:
         source: curated-enterprise
         url: >-
           https://aws.amazon.com/marketplace/search/results?searchTerms=ServiceNow+Security+Operations
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -429,7 +429,7 @@ pillars:
         function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Rapid7
-    generated_at: '2026-09-01T11:12:17.576Z'
+    generated_at: '2026-09-15T11:14:00.824Z'
     sources:
       - aws-marketplace
       - curated-enterprise
