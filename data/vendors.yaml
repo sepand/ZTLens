@@ -2,7 +2,7 @@
 # Regenerate with: cd scripts/vendor-sync && npm ci && npm run sync
 # Edit scripts/vendor-sync/pillar-keywords.yaml to change category matching.
 
-generated_at: '2026-09-15T11:14:00.824Z'
+generated_at: '2026-10-01T12:33:40.570Z'
 sources:
   - aws-marketplace
   - curated-enterprise
@@ -56,7 +56,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=BeyondTrust
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -97,7 +97,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Carbon+Black
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -138,7 +138,7 @@ pillars:
         function: identify
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Checkmarx
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -179,7 +179,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Thales+CipherTrust
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -220,7 +220,7 @@ pillars:
         function: protect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Check+Point+CloudGuard
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -249,18 +249,18 @@ pillars:
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-h77jedsmpzs4k
+      - name: ADNS for Amazon Route 53 Resolver DNS Firewall (30-Day Free Trial, PAYG)
+        publisher: Palo Alto Networks
+        category: Cloud Governance
+        function: govern
+        source: aws-marketplace
+        url: https://aws.amazon.com/marketplace/pp/prodview-lrceyvgks3z6o
       - name: IBM Verify SaaS - IAM for Workforce and CIAM on AWS
         publisher: IBM Software
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-iiszdvskbakmo
-      - name: ADNS for Amazon Route 53 Resolver DNS Firewall - Free Preview
-        publisher: Palo Alto Networks
-        category: Cloud Governance
-        function: govern
-        source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-lrceyvgks3z6o
       - name: Okta Workforce - Starter
         publisher: Okta, Inc
         category: Cloud Governance
@@ -273,18 +273,18 @@ pillars:
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-qbnvya3ibhlr2
-      - name: IBM Guardium Data Detection & Response
-        publisher: IBM Software
-        category: Cloud Governance
-        function: respond
-        source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-ukvsu4lwl7j6c
       - name: IBM Security Verify Governance
         publisher: IBM Software
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-rbftd2djwojl2
+      - name: IBM Guardium Data Detection & Response
+        publisher: IBM Software
+        category: Cloud Governance
+        function: respond
+        source: aws-marketplace
+        url: https://aws.amazon.com/marketplace/pp/prodview-ukvsu4lwl7j6c
       - name: Cisco Duo - Essentials Edition
         publisher: Cisco Systems, Inc.
         category: Cloud Governance
@@ -327,30 +327,30 @@ pillars:
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-aciq4fyplkpgy
-      - name: Observo AI
-        publisher: SentinelOne
-        category: Cloud Governance
-        function: govern
-        source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-ofvcippnsr6ww
       - name: VM-series - Advanced security Subs (PAYG) using CFT templates
         publisher: Palo Alto Networks
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-7rmiex3uw3wfy
+      - name: Observo AI
+        publisher: SentinelOne
+        category: Cloud Governance
+        function: govern
+        source: aws-marketplace
+        url: https://aws.amazon.com/marketplace/pp/prodview-ofvcippnsr6ww
       - name: Check Point SASE Internet Access (formerly Harmony SASE)
         publisher: Check Point Software Technologies
         category: Cloud Governance
         function: govern
         source: aws-marketplace
         url: https://aws.amazon.com/marketplace/pp/prodview-7h3xusmzeqcpe
-      - name: IBM Guardium Data Protection (30-day trial)
-        publisher: IBM Software
+      - name: Deloitte Consulting (USA) - Cloud Managed Services
+        publisher: Deloitte Consulting LLP
         category: Cloud Governance
-        function: govern
+        function: recover
         source: aws-marketplace
-        url: https://aws.amazon.com/marketplace/pp/prodview-rsj7kf4j2nzig
+        url: https://aws.amazon.com/marketplace/pp/prodview-uts5qslj55f24
       - name: Splunk SOAR
         publisher: Splunk
         category: Security Orchestration & Automation
@@ -376,7 +376,7 @@ pillars:
         source: curated-enterprise
         url: >-
           https://aws.amazon.com/marketplace/search/results?searchTerms=ServiceNow+Security+Operations
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
@@ -429,7 +429,7 @@ pillars:
         function: detect
         source: curated-enterprise
         url: https://aws.amazon.com/marketplace/search/results?searchTerms=Rapid7
-    generated_at: '2026-09-15T11:14:00.824Z'
+    generated_at: '2026-10-01T12:33:40.570Z'
     sources:
       - aws-marketplace
       - curated-enterprise
